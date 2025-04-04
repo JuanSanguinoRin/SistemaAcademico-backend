@@ -5,6 +5,7 @@ import co.edu.ufps.backend.repository.FacturacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,51 +19,24 @@ public class FacturacionService {
         this.facturacionRepository = facturacionRepository;
     }
 
-    /**
-     * Listar todas las facturas.
-     *
-     * @return lista de todas las facturas
-     */
+    // Operaciones CRUD
     public List<Facturacion> listarTodas() {
         return facturacionRepository.findAll();
     }
 
-    /**
-     * Buscar una factura por su número.
-     *
-     * @param numeroFactura número de la factura
-     * @return factura encontrada o un Optional vacío si no existe
-     */
     public Optional<Facturacion> buscarPorNumeroFactura(String numeroFactura) {
         return facturacionRepository.findById(numeroFactura);
     }
 
-    /**
-     * Guardar o actualizar una factura.
-     *
-     * @param facturacion factura a guardar o actualizar
-     * @return la factura guardada
-     */
     public Facturacion guardar(Facturacion facturacion) {
+        // Se podría inicializar algunos campos si es necesario
         return facturacionRepository.save(facturacion);
     }
 
-    /**
-     * Eliminar una factura por su número.
-     *
-     * @param numeroFactura número de la factura a eliminar
-     */
     public void eliminar(String numeroFactura) {
         facturacionRepository.deleteById(numeroFactura);
     }
 
-    /**
-     * Actualizar el estado de una factura.
-     *
-     * @param numeroFactura número de la factura
-     * @param estado nuevo estado de la factura
-     * @return la factura actualizada
-     */
     public Optional<Facturacion> actualizarEstado(String numeroFactura, String estado) {
         Optional<Facturacion> facturaOptional = facturacionRepository.findById(numeroFactura);
         if (facturaOptional.isPresent()) {
@@ -71,5 +45,74 @@ public class FacturacionService {
             return Optional.of(facturacionRepository.save(factura));
         }
         return Optional.empty();
+    }
+
+    // Lógica de negocio simulada
+
+    // Genera la factura asignando fecha de emisión y estado inicial.
+    public Facturacion generarFactura(String numeroFactura) {
+        return facturacionRepository.findById(numeroFactura).map(factura -> {
+            factura.setFechaEmision(new Date());
+            factura.setEstado("Pendiente");
+            // Invoca el método de la entidad que, en una implementación real, podría realizar otras acciones.
+            factura.generarFactura();
+            return facturacionRepository.save(factura);
+        }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+    }
+
+    // Aplica un descuento, actualiza el campo de descuentos y recalcula el total.
+    public Facturacion aplicarDescuento(String numeroFactura, String concepto, double valor) {
+        return facturacionRepository.findById(numeroFactura).map(factura -> {
+            factura.setDescuentos(valor);
+            factura.aplicarDescuento(concepto, valor);
+            // Recalcular total, suponiendo que el método de la entidad lo realice.
+            factura.calcularTotal();
+            return facturacionRepository.save(factura);
+        }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+    }
+
+    // Calcula el total basándose en el subtotal y descuentos.
+    public Facturacion calcularTotal(String numeroFactura) {
+        return facturacionRepository.findById(numeroFactura).map(factura -> {
+            factura.calcularTotal();
+            double subtotal = (factura.getSubtotal() != null ? factura.getSubtotal() : 0);
+            double descuentos = (factura.getDescuentos() != null ? factura.getDescuentos() : 0);
+            factura.setTotal(subtotal - descuentos);
+            return facturacionRepository.save(factura);
+        }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+    }
+
+    // Registra un pago actualizando la fecha de pago, el método y el estado.
+    public Facturacion registrarPago(String numeroFactura, double monto, String metodoPago) {
+        return facturacionRepository.findById(numeroFactura).map(factura -> {
+            factura.registrarPago(monto, metodoPago);
+            factura.setFechaPago(new Date());
+            factura.setMetodoPago(metodoPago);
+            factura.setEstado("Pagada");
+            return facturacionRepository.save(factura);
+        }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+    }
+
+    // Envía la factura electrónica.
+    public Facturacion enviarFacturaElectronica(String numeroFactura) {
+        return facturacionRepository.findById(numeroFactura).map(factura -> {
+            factura.enviarFacturaElectronica();
+            return facturacionRepository.save(factura);
+        }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+    }
+
+    // Genera un recibo digital.
+    public Facturacion generarReciboDigital(String numeroFactura) {
+        return facturacionRepository.findById(numeroFactura).map(factura -> {
+            factura.generarReciboDigital();
+            return facturacionRepository.save(factura);
+        }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+    }
+
+    // Consulta y retorna el estado de la factura.
+    public String consultarEstado(String numeroFactura) {
+        return facturacionRepository.findById(numeroFactura)
+                .map(Facturacion::consultarEstado)
+                .orElse("Factura no encontrada");
     }
 }
