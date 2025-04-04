@@ -3,7 +3,6 @@ package co.edu.ufps.backend.service;
 import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,58 +11,73 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EstudianteCursoService {
-    @Autowired
     private final EstudianteCursoRepository estudianteCursoRepository;
 
-    // Obtener todos los registros de EstudianteCurso
-    public List<EstudianteCurso> getAll() {
+    public List<EstudianteCurso> getAllEstudianteCursos() {
         return estudianteCursoRepository.findAll();
     }
 
-    // Obtener un registro por su ID
-    public Optional<EstudianteCurso> getById(Long id) {
+    public Optional<EstudianteCurso> getEstudianteCursoById(Long id) {
         return estudianteCursoRepository.findById(id);
     }
 
-    // Crear un nuevo registro de EstudianteCurso
-    public EstudianteCurso create(EstudianteCurso estudianteCurso) {
+    public List<EstudianteCurso> getEstudianteCursosByEstudiante(Long estudianteId) {
+        return estudianteCursoRepository.findByEstudianteCodigoEstudiante(estudianteId);
+    }
+
+    public List<EstudianteCurso> getEstudianteCursosByCurso(Long cursoId) {
+        return estudianteCursoRepository.findByCursoId(cursoId);
+    }
+
+    public Optional<EstudianteCurso> getEstudianteCursoByEstudianteAndCurso(Long estudianteId, Long cursoId) {
+        return estudianteCursoRepository.findByEstudianteCodigoEstudianteAndCursoId(estudianteId, cursoId);
+    }
+
+    public List<EstudianteCurso> getEstudianteCursosByEstado(String estado) {
+        return estudianteCursoRepository.findByEstado(estado);
+    }
+
+    public EstudianteCurso createEstudianteCurso(EstudianteCurso estudianteCurso) {
         return estudianteCursoRepository.save(estudianteCurso);
     }
 
-    // Actualizar un registro existente por ID
-    public EstudianteCurso update(Long id, EstudianteCurso detalles) {
+    public EstudianteCurso updateEstudianteCurso(Long id, EstudianteCurso estudianteCursoDetails) {
         return estudianteCursoRepository.findById(id).map(estudianteCurso -> {
-            estudianteCurso.setEstado(detalles.getEstado());
-            estudianteCurso.setHabilitacion(detalles.getHabilitacion());
-            estudianteCurso.setEstudiante(detalles.getEstudiante());
-            estudianteCurso.setCurso(detalles.getCurso());
+            estudianteCurso.setCurso(estudianteCursoDetails.getCurso());
+            estudianteCurso.setEstudiante(estudianteCursoDetails.getEstudiante());
+            estudianteCurso.setEstado(estudianteCursoDetails.getEstado());
+            estudianteCurso.setHabilitacion(estudianteCursoDetails.getHabilitacion());
             return estudianteCursoRepository.save(estudianteCurso);
-        }).orElseThrow(() -> new RuntimeException("EstudianteCurso no encontrado"));
+        }).orElseThrow(() -> new RuntimeException("EstudianteCurso not found"));
     }
 
-    // Eliminar un registro por ID
-    public void delete(Long id) {
+    public void deleteEstudianteCurso(Long id) {
         estudianteCursoRepository.deleteById(id);
     }
 
-    // Implementar métodos personalizados
-    public void agregarAsistencia(Long id) {
-        estudianteCursoRepository.findById(id).ifPresent(EstudianteCurso::agregarAsistencia);
+    public void agregarAsistencia(Long estudianteCursoId, String fecha, Boolean asistio) {
+        // Lógica para agregar asistencia
     }
 
-    public void calcularDefinitiva(Long id) {
-        estudianteCursoRepository.findById(id).ifPresent(EstudianteCurso::calcularDefinitiva);
+    public Float calcularDefinitiva(Long estudianteCursoId) {
+        // Lógica para calcular nota definitiva
+        return 0.0f; // Placeholder
     }
 
-    public void comprobarRehabilitacion(Long id) {
-        estudianteCursoRepository.findById(id).ifPresent(EstudianteCurso::comprobarRehabilitacion);
+    public Boolean comprobarRehabilitacion(Long estudianteCursoId) {
+        // Lógica para comprobar si el estudiante puede hacer habilitación
+        return false; // Placeholder
     }
 
-    public void cancelar(Long id) {
-        estudianteCursoRepository.findById(id).ifPresent(EstudianteCurso::cancelar);
+    public void cancelar(Long estudianteCursoId) {
+        // Lógica para cancelar curso
+        EstudianteCurso estudianteCurso = estudianteCursoRepository.findById(estudianteCursoId)
+                .orElseThrow(() -> new RuntimeException("EstudianteCurso not found"));
+        estudianteCurso.setEstado("cancelado");
+        estudianteCursoRepository.save(estudianteCurso);
     }
 
-    public void matricularCurso(Long id) {
-        estudianteCursoRepository.findById(id).ifPresent(EstudianteCurso::matricularCurso);
+    public void matricularCurso(Long estudianteId, Long cursoId) {
+        // Lógica para matricular curso
     }
 }

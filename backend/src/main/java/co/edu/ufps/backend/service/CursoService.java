@@ -1,9 +1,9 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Curso;
+import co.edu.ufps.backend.model.Estudiante;
 import co.edu.ufps.backend.repository.CursoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,28 +12,38 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CursoService {
-
-    @Autowired
     private final CursoRepository cursoRepository;
 
-    // Obtener todos los cursos
     public List<Curso> getAllCursos() {
         return cursoRepository.findAll();
     }
 
-    // Obtener un curso por su código
-    public Optional<Curso> getCursoByCodigo(Long codigo) {
-        return cursoRepository.findById(codigo);
+    public Optional<Curso> getCursoById(Long id) {
+        return cursoRepository.findById(id);
     }
 
-    // Crear un nuevo curso
+    public List<Curso> getCursosByPrograma(Long programaId) {
+        return cursoRepository.findByProgramaId(programaId);
+    }
+
+    public List<Curso> getCursosBySemestre(Long semestreId) {
+        return cursoRepository.findBySemestreId(semestreId);
+    }
+
+    public List<Curso> getCursosByDocente(Long docenteId) {
+        return cursoRepository.findByDocenteId(docenteId);
+    }
+
+    public List<Curso> getCursosVacacionales(Boolean vacacional) {
+        return cursoRepository.findByVacacional(vacacional);
+    }
+
     public Curso createCurso(Curso curso) {
         return cursoRepository.save(curso);
     }
 
-    // Actualizar un curso existente
-    public Curso updateCurso(Long codigo, Curso cursoDetails) {
-        return cursoRepository.findById(codigo).map(curso -> {
+    public Curso updateCurso(Long id, Curso cursoDetails) {
+        return cursoRepository.findById(id).map(curso -> {
             curso.setNombre(cursoDetails.getNombre());
             curso.setDescripcion(cursoDetails.getDescripcion());
             curso.setContenido(cursoDetails.getContenido());
@@ -47,11 +57,43 @@ public class CursoService {
             curso.setGrupo(cursoDetails.getGrupo());
             curso.setVacacional(cursoDetails.getVacacional());
             return cursoRepository.save(curso);
-        }).orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+        }).orElseThrow(() -> new RuntimeException("Curso not found"));
     }
 
-    // Eliminar un curso por su código
-    public void deleteCurso(Long codigo) {
-        cursoRepository.deleteById(codigo);
+    public void deleteCurso(Long id) {
+        cursoRepository.deleteById(id);
+    }
+
+    public Curso modificarCurso(Long id, Curso cursoDetails) {
+        return updateCurso(id, cursoDetails);
+    }
+
+    public void inscribirEstudiante(Long cursoId, Estudiante estudiante) {
+        // Lógica para inscribir estudiante
+    }
+
+    public void cancelarInscripcion(Long cursoId, Long estudianteId) {
+        // Lógica para cancelar inscripción
+    }
+
+    public Curso obtenerDetalles(Long cursoId) {
+        return cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new RuntimeException("Curso not found"));
+    }
+
+    public void crearEvaluacion(Long cursoId, String evaluacionData) {
+        // Lógica para crear evaluación
+    }
+
+    public void crearTarea(Long cursoId, String tareaData) {
+        // Lógica para crear tarea
+    }
+
+    public void modificarCalificacion(Long cursoId, Long estudianteId, Float calificacion) {
+        // Lógica para modificar calificación
+    }
+
+    public void generarAsistencia(Long cursoId, String fecha) {
+        // Lógica para generar asistencia
     }
 }

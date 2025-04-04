@@ -3,6 +3,8 @@ package co.edu.ufps.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -10,67 +12,35 @@ import lombok.*;
 public class Curso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
+    private Long id;
+
     private String nombre;
     private String descripcion;
     private String contenido;
-    @OneToOne
-    @JoinColumn(name = "codigo_Docente")
+
+    @ManyToOne
+    @JoinColumn(name = "docente_id")
     private Docente docente;
+
     private String objetivos;
     private String competencias;
     private Integer cupoMaximo;
+
     @ManyToOne
-    @JoinColumn(name = "codigo_Asignatura")
+    @JoinColumn(name = "asignatura_id")
     private Asignatura asignatura;
-    @OneToOne
-    @JoinColumn(name = "codigo_Programa")
+
+    @ManyToOne
+    @JoinColumn(name = "programa_id")
     private Programa programa;
-    @OneToOne
-    @JoinColumn(name = "id_Semestre")
+
+    @ManyToOne
+    @JoinColumn(name = "semestre_id")
     private Semestre semestre;
+
     private Character grupo;
     private Boolean vacacional;
 
-    // Métodos de la clase
-    public void modificarCurso() {
-        // Implementación del método
-    }
-
-    public void inscribirEstudiante() {
-        // Implementación del método
-    }
-
-    public void cancelarInscripcion() {
-        // Implementación del método
-    }
-
-    public void obtenerDetalles() {
-        // Implementación del método
-    }
-
-    public void crearEvaluacion() {
-        // Implementación del método
-    }
-
-    public void crearTarea() {
-        // Implementación del método
-    }
-
-    public void modificarCalificacion() {
-        // Implementación del método
-    }
-
-    public void generarAsistencia() {
-        // Implementación del método
-    }
-
-    public void eliminarAsistencia() {
-        // Implementación del método
-    }
-
-    public void modificarAsistencia() {
-        // Implementación del método
-    }
-
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL)
+    private List<EstudianteCurso> estudiantes;
 }
