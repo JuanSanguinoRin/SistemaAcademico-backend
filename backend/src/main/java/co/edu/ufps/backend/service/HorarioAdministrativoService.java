@@ -55,4 +55,23 @@ public class HorarioAdministrativoService {
     public void eliminar(Long id) {
         horarioAdministrativoRepository.deleteById(id);
     }
+
+
+    // Métodos de la clase
+    public void generarHorario(String dia, String departamento, Date horaInicio, Date horaFin, AsignacionAdministrativo asignacion) {
+        if (asignacion == null || asignacion.getPersonal() == null) {
+            throw new IllegalArgumentException("La asignación del empleado no puede ser nula.");
+        }
+
+        // Crear y guardar el nuevo horario administrativo
+        HorarioAdministrativo horario = new HorarioAdministrativo();
+        horario.setDia(dia);
+        horario.setDepartamento(departamento);
+        horario.setHoraInicio(horaInicio);
+        horario.setHoraFin(horaFin);
+        horario.setAsignacionAdministrativo(asignacion);
+
+        return horarioAdministrativoRepository.save(horario);
+    }
+
 }

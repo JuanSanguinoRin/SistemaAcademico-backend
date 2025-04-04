@@ -27,10 +27,6 @@ public class HorarioAdministrativo {
     @JoinColumn(name = "id", nullable = false)
     private AsignacionAdministrativo asignacionAdministrativo;
 
-    // Métodos de la clase
-    public void generarHorario() {
-        // Implementación del método
-    }
 
 
 }
