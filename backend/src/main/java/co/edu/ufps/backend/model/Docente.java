@@ -8,35 +8,20 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Docente {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigoDocente;
+
     private String experiencia;
-    @OneToOne
-    @JoinColumn(name = "codigo_Docente")
+
+    // Un docente pertenece a un programa (un programa tiene varios docentes)
+    @ManyToOne
+    @JoinColumn(name = "codigo_programa", nullable = false)
     private Programa programa;
+
+    // Un docente está asociado a una persona
     @OneToOne
-    @JoinColumn(name = "codigo_Persona")
+    @JoinColumn(name = "cedula_persona", nullable = false, unique = true)
     private Persona persona;
-
-    // Métodos de la clase
-    public void consultarHorario() {
-        // Implementación del método
-    }
-
-    public void consultarNotasEstudiantes() {
-        // Implementación del método
-    }
-
-    public void cambiarDatos() {
-        // Implementación del método
-    }
-
-    public void consultarCursos() {
-        // Implementación del método
-    }
-
-    public void definirHorario() {
-        // Implementación del método
-    }
-
 }

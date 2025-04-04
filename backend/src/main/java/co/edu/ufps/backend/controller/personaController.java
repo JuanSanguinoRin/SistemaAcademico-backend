@@ -1,0 +1,65 @@
+package co.edu.ufps.backend.controller;
+
+import co.edu.ufps.backend.model.Persona;
+import co.edu.ufps.backend.service.PersonaService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/personas")
+@RequiredArgsConstructor
+public class personaController {
+
+    private final PersonaService personaService;
+
+    // Obtener todas las personas
+    @GetMapping
+    public ResponseEntity<List<Persona>> getAllPersonas() {
+        return ResponseEntity.ok(personaService.getAllPersonas());
+    }
+
+    // Obtener una persona por cédula
+    @GetMapping("/{cedula}")
+    public ResponseEntity<Persona> getPersonaByCedula(@PathVariable Long cedula) {
+        Optional<Persona> persona = personaService.getPersonaByCedula(cedula);
+        return persona.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Crear una nueva persona
+    @PostMapping
+    public ResponseEntity<Persona> createPersona(@RequestBody Persona persona) {
+        try {
+            Persona nuevaPersona = personaService.createPersona(persona);
+            return ResponseEntity.ok(nuevaPersona);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    // Modificar datos de una persona
+    @PutMapping("/{cedula}")
+    public ResponseEntity<Persona> modificarDatos(@PathVariable Long cedula, @RequestBody Persona personaDetalles) {
+        try {
+            Persona personaActualizada = personaService.modificarDatos(cedula, personaDetalles);
+            return ResponseEntity.ok(personaActualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Eliminar datos de una persona (eliminación lógica)
+    @DeleteMapping("/{cedula}")
+    public ResponseEntity<Void> eliminarDatos(@PathVariable Long cedula) {
+        try {
+            personaService.eliminarDatos(cedula);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
