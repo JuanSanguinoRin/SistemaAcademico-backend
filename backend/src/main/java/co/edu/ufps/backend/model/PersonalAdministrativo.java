@@ -7,7 +7,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@PrimaryKeyJoinColumn(name = "persona_id") // esta monda es que hereda
+@PrimaryKeyJoinColumn(name = "persona_id")
 
 public class PersonalAdministrativo extends Persona {
     // Atributos (según UML)

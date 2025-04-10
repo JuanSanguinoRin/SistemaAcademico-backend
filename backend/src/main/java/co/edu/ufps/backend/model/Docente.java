@@ -11,6 +11,8 @@ public class Docente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Long codigoDocente;
 
     private String experiencia;

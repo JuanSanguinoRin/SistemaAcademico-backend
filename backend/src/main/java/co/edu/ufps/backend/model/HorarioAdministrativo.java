@@ -24,7 +24,7 @@ public class HorarioAdministrativo {
     private Date horaFin;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "asignacionAdmin_id", nullable = false)
     private AsignacionAdministrativo asignacionAdministrativo;
 
 
