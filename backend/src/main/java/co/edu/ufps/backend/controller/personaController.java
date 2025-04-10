@@ -1,11 +1,13 @@
 package co.edu.ufps.backend.controller;
 
 import co.edu.ufps.backend.model.Persona;
+import co.edu.ufps.backend.model.Reserva;
 import co.edu.ufps.backend.service.PersonaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
