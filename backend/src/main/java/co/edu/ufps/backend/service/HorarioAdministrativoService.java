@@ -1,11 +1,13 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.AsignacionAdministrativo;
 import co.edu.ufps.backend.model.HorarioAdministrativo;
 import co.edu.ufps.backend.repository.HorarioAdministrativoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -71,7 +73,6 @@ public class HorarioAdministrativoService {
         horario.setHoraFin(horaFin);
         horario.setAsignacionAdministrativo(asignacion);
 
-        return horarioAdministrativoRepository.save(horario);
     }
 
 }
