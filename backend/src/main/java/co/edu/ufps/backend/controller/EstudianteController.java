@@ -63,7 +63,7 @@ public class EstudianteController {
     @PutMapping("/{id}/modificar-datos")
     public ResponseEntity<Estudiante> modificarDatosEstudiante(@PathVariable Long id, @RequestBody Estudiante estudianteDetails) {
         try {
-            Estudiante updatedEstudiante = estudianteService.modificarDatosEstudiante(id, estudianteDetails);
+            Estudiante updatedEstudiante = estudianteService.updateEstudiante(id, estudianteDetails);
             return ResponseEntity.ok(updatedEstudiante);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

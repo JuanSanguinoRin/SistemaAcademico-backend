@@ -60,12 +60,12 @@ public class HorarioAdministrativoService {
 
 
     // Métodos de la clase
-    public void generarHorario(String dia, String departamento, Date horaInicio, Date horaFin, AsignacionAdministrativo asignacion) {
+    public HorarioAdministrativo generarHorario(String dia, String departamento, Date horaInicio, Date horaFin, AsignacionAdministrativo asignacion) {
         if (asignacion == null || asignacion.getPersonal() == null) {
             throw new IllegalArgumentException("La asignación del empleado no puede ser nula.");
         }
 
-        // Crear y guardar el nuevo horario administrativo
+        // Crear y configurar el nuevo horario administrativo
         HorarioAdministrativo horario = new HorarioAdministrativo();
         horario.setDia(dia);
         horario.setDepartamento(departamento);
@@ -73,6 +73,9 @@ public class HorarioAdministrativoService {
         horario.setHoraFin(horaFin);
         horario.setAsignacionAdministrativo(asignacion);
 
+        // Retornar el objeto creado
+        return horario;
     }
+
 
 }
