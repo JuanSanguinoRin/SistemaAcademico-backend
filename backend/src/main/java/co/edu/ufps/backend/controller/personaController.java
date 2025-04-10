@@ -62,4 +62,20 @@ public class personaController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/{cedula}/reservas")
+    public ResponseEntity<?> crearReservaParaPersona(
+            @PathVariable Long cedula,
+            @RequestParam Long recursoId,
+            @RequestParam Date dia,
+            @RequestParam Date horaInicio,
+            @RequestParam Date horaFin
+    ) {
+        try {
+            Reserva reserva = personaService.crearReservaParaPersona(cedula, recursoId, dia, horaInicio, horaFin);
+            return ResponseEntity.ok(reserva);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

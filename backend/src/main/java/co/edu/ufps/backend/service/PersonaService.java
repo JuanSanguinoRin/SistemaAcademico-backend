@@ -1,10 +1,15 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Persona;
+import co.edu.ufps.backend.model.Recurso;
+import co.edu.ufps.backend.model.Reserva;
 import co.edu.ufps.backend.repository.PersonaRepository;
+import co.edu.ufps.backend.repository.RecursoRepository;
+import co.edu.ufps.backend.repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +18,8 @@ import java.util.Optional;
 public class PersonaService {
 
     private final PersonaRepository personaRepository;
+    private final ReservaService reservaService;
+    private final RecursoRepository recursoRepository;
 
     // Obtener todas las personas
     public List<Persona> getAllPersonas() {
@@ -73,5 +80,38 @@ public class PersonaService {
         personaRepository.save(persona);
     }
 
-    //FALA RECURSO Y MENSJAE
+    //Gestion de las reservas desde la persona
+    public List<Reserva> obtenerReservasDePersona(Long cedula) {
+        if (!personaRepository.existsById(cedula)) {
+            throw new RuntimeException("Persona con cédula " + cedula + " no existe.");
+        }
+        return reservaService.getReservasByPersona(cedula);
+    }
+
+    public Reserva crearReservaParaPersona(Long cedulaPersona, Long recursoId, Date dia, Date horaInicio, Date horaFin) {
+
+        Persona persona = personaRepository.findById(cedulaPersona)
+                .orElseThrow(() -> new RuntimeException("Persona con cédula " + cedulaPersona + " no encontrada"));
+
+        Recurso recurso = recursoRepository.findById(recursoId)
+                .orElseThrow(() -> new RuntimeException("Recurso con ID " + recursoId + " no encontrado"));
+
+        // Verificar si el recurso ya está reservado en ese horario
+        boolean estaOcupado = reservaService.estaRecursoOcupado(recursoId, dia, horaInicio, horaFin);
+        if (estaOcupado) {
+            throw new RuntimeException("El recurso ya está reservado en ese horario.");
+        }
+
+        // Crear nueva reserva
+        Reserva reserva = new Reserva();
+        reserva.setUsuario(persona);
+        reserva.setRecurso(recurso);
+        reserva.setDia(dia);
+        reserva.setHoraInicio(horaInicio);
+        reserva.setHoraFin(horaFin);
+
+        return reservaService.createReserva(reserva);
+    }
+
+    // Y MENSJAE
 }
