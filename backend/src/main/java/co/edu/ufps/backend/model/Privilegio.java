@@ -17,14 +17,7 @@ public class Privilegio {
     private String descripcion;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol; // Cada Privilegio pertenece a un Rol
-    
-    // Métodos específicos
-    public String obtenerDetalles() {
-        // Implementación del método
-        return "Privilegio: " + nombre + " - " + descripcion;
-    }
-    
 
 }

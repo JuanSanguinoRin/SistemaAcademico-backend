@@ -18,21 +18,11 @@ public class Publicacion {
     private Date fechaEnvio;
 
     @OneToOne
-    @JoinColumn(name = "cedula", nullable = false)
+    @JoinColumn(name = "persona_id", nullable = false)
     private Persona autor;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "foro_id", nullable = false)
     private Foro foro;
-
-
-    // Métodos específicos
-    public void publicar() {
-        // Implementación del método
-    }
-    
-    public void citar() {
-        // Implementación del método
-    }
 
 }

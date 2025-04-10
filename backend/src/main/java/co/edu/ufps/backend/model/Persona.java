@@ -8,10 +8,14 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Persona {
-    @Id
-    private Long cedula;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long cedula;
     private String nombre;
     private Long telefono;
     private Date fechaNacimiento;
