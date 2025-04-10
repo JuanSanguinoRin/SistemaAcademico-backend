@@ -13,37 +13,13 @@ public class EstudianteCurso {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "codigoEstudiante", nullable = false)
-    private Estudiante estudiante;
-
-    @ManyToOne
-    @JoinColumn(name = "codigo", nullable = false)
+    @JoinColumn(name = "curso_id")
     private Curso curso;
 
-    private String estado; // (Aprobado, Cursando, Perdido)
+    @ManyToOne
+    @JoinColumn(name = "estudiante_id")
+    private Estudiante estudiante;
+
+    private String estado; // Aprobado, cursando, perdido
     private Boolean habilitacion;
-
-
-
-    // Métodos de la clase
-    public void agregarAsistencia() {
-        // Implementación del método
-    }
-
-    public void calcularDefinitiva() {
-        // Implementación del método
-    }
-
-    public void comprobarRehabilitacion() {
-        // Implementación del método
-    }
-
-    public void cancelar() {
-        // Implementación del método
-    }
-
-    public void matricularCurso() {
-        // Implementación del método
-    }
-
 }

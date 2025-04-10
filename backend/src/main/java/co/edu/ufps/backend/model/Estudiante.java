@@ -3,58 +3,28 @@ package co.edu.ufps.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-//YA ESTAAAAAAAAAAAAAAAAAAAAAAAAAA
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Estudiante {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigoEstudiante;
+
     @ManyToOne
-    @JoinColumn(name = "codigo")
+    @JoinColumn(name = "programa_id")
     private Programa programa;
-    private int creditosAprobados;
-    private float promedioPonderado;
+
+    private Integer creditosAprobados;
+    private Float promedioPonderado;
+
     @OneToOne
-    @JoinColumn(name = "cedula")
+    @JoinColumn(name = "persona_id")
     private Persona persona;
 
-    // Métodos de la clase
-    public void modificarDatosEstudiante() {
-        // Implementación del método
-    }
-
-    public void incribirCurso() {
-        // Implementación del método
-    }
-
-    public void cancelarCurso() {
-        // Implementación del método
-    }
-
-    public void consultarHistorial() {
-        // Implementación del método
-    }
-
-    public void desistir() {
-        // Implementación del método
-    }
-
-    public void calcularPonderado() {
-        // Implementación del método
-    }
-
-    public void calcularSemestre() {
-        // Implementación del método
-    }
-
-    public void matricularCurso() {
-        // Implementación del método
-    }
-
-    public void actualizarHistorialAcademico(Semestre semestre) {
-        // Implementación del método
-    }
-
+    @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL)
+    private List<EstudianteCurso> cursos;
 }
