@@ -56,9 +56,10 @@ public class EstudianteService {
         return estudiante.getPromedioPonderado();
     }
 
-    public Integer calcularSemestre(Long estudianteId) {
+    public void matricularCurso(Long estudianteId) {
 
-        return 0; // Placeholder
+
+
     }
 
     public void actualizarHistorialAcademico(Long estudianteId, Semestre semestre) {

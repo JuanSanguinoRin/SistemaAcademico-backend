@@ -1,6 +1,9 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.Calificacion;
+import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.model.HistorialAcademico;
+import co.edu.ufps.backend.repository.EstudianteCursoRepository;
 import co.edu.ufps.backend.repository.HistorialAcademicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,8 @@ import java.util.Optional;
 public class HistorialAcademicoService {
 
     private final HistorialAcademicoRepository historialAcademicoRepository;
+    private final EstudianteCursoService estudianteCursoService;
+    private final CalificacionService calificacionService;
 
     public List<HistorialAcademico> getAllHistoriales() {
         return historialAcademicoRepository.findAll();
@@ -45,21 +50,49 @@ public class HistorialAcademicoService {
         historialAcademicoRepository.deleteById(id);
     }
 
-    // Lógica de ejemplo para calcular créditos aprobados:
-    // Se asume que el estudiante aprobó 6 cursos y cada uno otorga 5 créditos.
-    public HistorialAcademico calcularCreditosAprobados(Long id) {
-        return historialAcademicoRepository.findById(id).map(historial -> {
-            int cursosAprobados = 6; // Valor simulado; en una implementación real se obtendría de otra entidad o lógica.
-            int creditosCalculados = cursosAprobados * 5;
-            historial.setCreditosAprobados(creditosCalculados);
-            return historialAcademicoRepository.save(historial);
-        }).orElseThrow(() -> new RuntimeException("Historial no encontrado"));
+    // Método que retorna los créditos aprobados actuales sin modificar el registro.
+    public Integer calcularCreditosAprobados(Long id) {
+
+        List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(id);
+
+        if (cursosAprobados.isEmpty()) {
+            return 0;
+        }
+
+        int totalCreditos = 0;
+
+        for (EstudianteCurso ec : cursosAprobados) {
+            // Obtenemos la nota definitiva del curso
+
+            int creditos = ec.getCurso().getCreditos();
+            totalCreditos += creditos;
+
+        }
+
+        return totalCreditos;
+
     }
 
-    // Método que retorna los créditos aprobados actuales sin modificar el registro.
-    public Integer obtenerCreditosAprobados(Long id) {
-        return historialAcademicoRepository.findById(id)
-                .map(HistorialAcademico::getCreditosAprobados)
-                .orElse(null);
+    public Double calcularPromedioPonderado(Long estudianteId) {
+        // Obtener cursos aprobados
+        List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
+
+        if (cursosAprobados.isEmpty()) {
+            return 0.0;
+        }
+
+        double sumaPonderada = 0;
+        int totalCreditos = 0;
+
+        for (EstudianteCurso ec : cursosAprobados) {
+            // Obtenemos la nota definitiva del curso
+
+            int creditos = ec.getCurso().getCreditos();
+            sumaPonderada += estudianteCursoService.calcularDefinitiva(ec.getId()) * creditos;
+            totalCreditos += creditos;
+        }
+
+        return totalCreditos > 0 ? sumaPonderada / totalCreditos : 0.0;
     }
+
 }

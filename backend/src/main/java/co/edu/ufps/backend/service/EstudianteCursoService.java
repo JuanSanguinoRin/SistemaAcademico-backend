@@ -1,11 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.*;
-import co.edu.ufps.backend.repository.AsistenciaRepository;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
-import co.edu.ufps.backend.repository.CalificacionRepository;
-import co.edu.ufps.backend.repository.EstudianteRepository;
-import co.edu.ufps.backend.repository.CursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +12,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EstudianteCursoService {
     private final EstudianteCursoRepository estudianteCursoRepository;
-    private final AsistenciaRepository asistenciaRepository;
-    private final CalificacionRepository calificacionRepository;
-    private final EstudianteRepository estudianteRepository;
-    private final CursoRepository  cursoRepository;
+    private final AsistenciaService asistenciaService;
+    private final CalificacionService calificacionService;
+    private final EstudianteService estudianteService;
+    private final CursoService cursoService;
+    private final AsignaturaPrerrequisitoService asignaturaPrerrequisitoService;
 
     public List<EstudianteCurso> getAllEstudianteCursos() {
         return estudianteCursoRepository.findAll();
@@ -63,7 +60,6 @@ public class EstudianteCursoService {
         estudianteCursoRepository.deleteById(id);
     }
 
-
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
                 .orElseThrow(() -> new RuntimeException("Relación Estudiante-Curso no encontrada"));
@@ -74,11 +70,22 @@ public class EstudianteCursoService {
         asistencia.setEstado(asistenciaInput.getEstado());
         asistencia.setExcusa(asistenciaInput.getExcusa());
 
-        return asistenciaRepository.save(asistencia);
+        return asistenciaService.createAsistencia(asistencia);
     }
 
     public Float calcularDefinitiva(Long estudianteCursoId) {
-        List<Calificacion> calificaciones = calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
+
+        Optional<EstudianteCurso> estudianteCurso = this.getEstudianteCursoById(estudianteCursoId);
+
+        if (estudianteCurso.isEmpty())
+        {
+
+            throw new RuntimeException("Estudiante-Curso no encontrado.");
+
+        }
+
+        EstudianteCurso aux = estudianteCurso.get();
+        List<Calificacion> calificaciones = calificacionService.getCalificacionesByEstudianteCurso(aux);
 
         if (calificaciones.isEmpty()) {
             throw new RuntimeException("No hay calificaciones para este estudiante en este curso.");
@@ -86,10 +93,25 @@ public class EstudianteCursoService {
 
         float suma = 0f;
         for (Calificacion c : calificaciones) {
-            suma += c.getNota();
+
+            if(c.getTipo().equals("H")){
+
+                return c.getNota();
+
+            }else if(c.getTipo().equals("EX"))
+            {
+
+                suma += c.getNota() * 0.30f;
+
+            }else{
+
+                suma += c.getNota() * 0.2333f;
+
+            }
+
         }
 
-        return suma / calificaciones.size(); // Promedio simple
+        return suma;
     }
 
     public Boolean comprobarRehabilitacion(Long estudianteCursoId) {
@@ -108,10 +130,10 @@ public class EstudianteCursoService {
     }
 
     public EstudianteCurso matricularCurso(Long estudianteId, Long cursoId) {
-        Estudiante estudiante = estudianteRepository.findById(estudianteId)
+        Estudiante estudiante = estudianteService.getEstudianteById(estudianteId)
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
 
-        Curso curso = cursoRepository.findById(cursoId)
+        Curso curso = cursoService.getCursoById(cursoId)
                 .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
 
         // Validar si ya está matriculado
@@ -120,13 +142,41 @@ public class EstudianteCursoService {
             throw new RuntimeException("El estudiante ya está matriculado en este curso.");
         }
 
+        // 1. Validar prerrequisitos de la asignatura
+        validarPrerrequisitos(estudianteId, curso.getAsignatura());
+
+        // 2. Validar solapamiento de horarios
+        validarHorarios(estudianteId, cursoId);
+
         EstudianteCurso inscripcion = new EstudianteCurso();
         inscripcion.setEstudiante(estudiante);
         inscripcion.setCurso(curso);
         inscripcion.setEstado("Cursando");
-        inscripcion.setHabilitacion(false); // Por defecto no es habilitación
+        inscripcion.setHabilitacion(false);
 
         return estudianteCursoRepository.save(inscripcion);
     }
 
+    private void validarPrerrequisitos(Long estudianteId, Asignatura asignatura) {
+        // Obtener prerrequisitos de la asignatura
+
+
+        // Obtener cursos aprobados del estudiante
+        List<EstudianteCurso> cursosAprobados = this.getCursosAprobadosByEstudiante(estudianteId);
+
+        // Verificar que todos los prerrequisitos estén aprobados
+        for (AsignaturaPrerrequisito prerreq : prerrequisitos) {
+            boolean aprobado = cursosAprobados.stream()
+                    .anyMatch(ec -> ec.getCurso().getAsignatura().getCodigo().equals(prerreq.getPrerrequisito().getCodigo()));
+
+            if (!aprobado) {
+                throw new RuntimeException("Prerrequisito no aprobado: " + prerreq.getPrerrequisito().getNombre());
+            }
+        }
+    }
+
+    // Método para obtener cursos aprobados de un estudiante específico
+    public List<EstudianteCurso> getCursosAprobadosByEstudiante(Long estudianteId) {
+        return estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(estudianteId, "Aprobado");
+    }
 }

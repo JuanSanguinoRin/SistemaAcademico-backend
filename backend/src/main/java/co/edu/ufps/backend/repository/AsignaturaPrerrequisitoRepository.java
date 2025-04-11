@@ -9,4 +9,5 @@ public interface AsignaturaPrerrequisitoRepository extends JpaRepository<Asignat
 
     Optional<AsignaturaPrerrequisito> findByAsignatura_CodigoAndPrerrequisito_Codigo(Long codigoAsignatura, Long codigoPrerrequisito);
 
+
 }

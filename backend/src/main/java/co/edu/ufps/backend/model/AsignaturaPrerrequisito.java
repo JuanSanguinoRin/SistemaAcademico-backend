@@ -11,7 +11,9 @@ import lombok.*;
 public class AsignaturaPrerrequisito {
 
     @Id
-    private Long codigo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @OneToOne
     @JoinColumn(name = "codigo_Asignatura")
     private Asignatura asignatura;
@@ -19,9 +21,5 @@ public class AsignaturaPrerrequisito {
     @OneToOne
     @JoinColumn(name = "codigo_AsignaturaPrerrequisito")
     private Asignatura prerrequisito;
-
-
-
-
 
 }

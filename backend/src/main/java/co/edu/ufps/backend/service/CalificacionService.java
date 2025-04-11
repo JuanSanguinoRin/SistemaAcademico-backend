@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Calificacion;
+import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.repository.CalificacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,13 @@ public class CalificacionService {
 
     public Calificacion createCalificacion(Calificacion calificacion) {
         return calificacionRepository.save(calificacion);
+    }
+
+    public List<Calificacion> getCalificacionesByEstudianteCurso(EstudianteCurso curso)
+    {
+
+        return calificacionRepository.findByEstudianteCursoId(curso.getId());
+
     }
 
     public Calificacion updateCalificacion(Long id, Calificacion calificacionDetails) {
