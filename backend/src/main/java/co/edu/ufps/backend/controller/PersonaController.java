@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/personas")
+@RequestMapping("/personas")
 @RequiredArgsConstructor
-public class personaController {
+public class PersonaController {
 
     private final PersonaService personaService;
 
@@ -25,7 +25,7 @@ public class personaController {
     }
 
     // Obtener una persona por cédula
-    @GetMapping("/{cedula}")
+    @GetMapping("/{id}")
     public ResponseEntity<Persona> getPersonaByCedula(@PathVariable Long cedula) {
         Optional<Persona> persona = personaService.getPersonaByCedula(cedula);
         return persona.map(ResponseEntity::ok)
@@ -44,7 +44,7 @@ public class personaController {
     }
 
     // Modificar datos de una persona
-    @PutMapping("/{cedula}")
+    @PutMapping("/{id}")
     public ResponseEntity<Persona> modificarDatos(@PathVariable Long cedula, @RequestBody Persona personaDetalles) {
         try {
             Persona personaActualizada = personaService.modificarDatos(cedula, personaDetalles);
@@ -55,7 +55,7 @@ public class personaController {
     }
 
     // Eliminar datos de una persona (eliminación lógica)
-    @DeleteMapping("/{cedula}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarDatos(@PathVariable Long cedula) {
         try {
             personaService.eliminarDatos(cedula);
@@ -65,7 +65,7 @@ public class personaController {
         }
     }
 
-    @PostMapping("/{cedula}/reservas")
+    @PostMapping("/{id}/reservas")
     public ResponseEntity<?> crearReservaParaPersona(
             @PathVariable Long cedula,
             @RequestParam Long recursoId,

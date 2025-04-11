@@ -20,13 +20,5 @@ public class Foro {
     private String tema;
     private String descripcion;
     private Date fechaCreacion;
-    
-    // Métodos específicos
-    public void agregarTema() {
-        // Implementación del método
-    }
-    
-    public void censurarPublicacion() {
-        // Implementación del método
-    }
+
 }
