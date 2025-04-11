@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Asistencia;
+import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.repository.AsistenciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class AsistenciaService {
     @Autowired
     private final AsistenciaRepository asistenciaRepository;
+    private final EstudianteCursoService estudianteCursoService;
 
     /**
      * Obtener todas las asistencias
@@ -73,5 +75,18 @@ public class AsistenciaService {
      */
     public List<Asistencia> getAsistenciasByFecha(Date fecha) {
         return asistenciaRepository.findAll();
+    }
+
+    public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
+        // Usamos el service de EstudianteCurso para obtener la relación
+        EstudianteCurso ec = estudianteCursoService.getById(estudianteCursoId);
+
+        Asistencia asistencia = new Asistencia();
+        asistencia.setEstudianteCurso(ec);
+        asistencia.setFecha(asistenciaInput.getFecha());
+        asistencia.setEstado(asistenciaInput.getEstado());
+        asistencia.setExcusa(asistenciaInput.getExcusa());
+
+        return asistenciaRepository.save(asistencia);
     }
 }

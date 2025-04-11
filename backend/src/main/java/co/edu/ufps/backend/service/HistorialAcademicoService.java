@@ -22,6 +22,11 @@ public class HistorialAcademicoService {
         return historialAcademicoRepository.findById(id);
     }
 
+    public HistorialAcademico getByEstudianteId(Long estudianteId) {
+        return historialAcademicoRepository.findByEstudianteCodigoEstudiante(estudianteId)
+                .orElseThrow(() -> new RuntimeException("Historial académico no encontrado"));
+    }
+
     public HistorialAcademico createHistorial(HistorialAcademico historial) {
         // Si el historial no tiene créditos asignados, se inicializan en 0.
         if (historial.getCreditosAprobados() == null) {

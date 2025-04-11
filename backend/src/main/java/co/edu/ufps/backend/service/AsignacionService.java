@@ -1,9 +1,6 @@
 package co.edu.ufps.backend.service;
 
-import co.edu.ufps.backend.model.Asignacion;
-import co.edu.ufps.backend.model.Calificacion;
-import co.edu.ufps.backend.model.Curso;
-import co.edu.ufps.backend.model.Docente;
+import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.repository.AsignacionRepository;
 import co.edu.ufps.backend.repository.CursoRepository;
 import co.edu.ufps.backend.repository.DocenteRepository;
@@ -29,6 +26,9 @@ public class AsignacionService {
 //ESTA FOKIN MONDAD TAMPOCO
     @Autowired
     private final CursoRepository cursoRepository;
+
+    private final AsistenciaService asistenciaService;
+
 
 
     /**
@@ -101,8 +101,9 @@ public class AsignacionService {
         return asignacionRepository.save(asignacion);
     }
 
+    //ESTO NO ESTA EN EL CONTROLLER
     //falta que llame ese metodo desde calificacion
-    public Calificacion crearCalificacionDesdeAsignacion(
+    public Calificacion registrarCalificacion(
             Long docenteId,
             Long cursoId,
             Long estudianteId,
@@ -119,9 +120,8 @@ public class AsignacionService {
         return calificacionService.asignarCalificacion(estudianteId, cursoId, nombre, tipo, nota, fecha);
     }
 
-
-    public boolean verificarDisponibilidad() {
-
-        return false;
+    public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
+        return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
     }
+
 }

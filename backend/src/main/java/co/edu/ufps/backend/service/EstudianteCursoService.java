@@ -1,10 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.*;
-import co.edu.ufps.backend.repository.AsistenciaRepository;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
-import co.edu.ufps.backend.repository.CalificacionRepository;
-import co.edu.ufps.backend.repository.EstudianteRepository;
 import co.edu.ufps.backend.repository.CursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +13,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EstudianteCursoService {
     private final EstudianteCursoRepository estudianteCursoRepository;
-    private final AsistenciaRepository asistenciaRepository;
-    private final CalificacionRepository calificacionRepository;
-    private final EstudianteRepository estudianteRepository;
     private final CursoRepository  cursoRepository;
 
     public List<EstudianteCurso> getAllEstudianteCursos() {
@@ -28,6 +22,12 @@ public class EstudianteCursoService {
     public Optional<EstudianteCurso> getEstudianteCursoById(Long id) {
         return estudianteCursoRepository.findById(id);
     }
+    //es lo mismo que getEstudianteCursoById pero sirve para suponer que siempre se encuentr el id, se usara solo en el backend
+    public EstudianteCurso getById(Long id) {
+        return estudianteCursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Relación Estudiante-Curso no encontrada"));
+    }
+
 
     public List<EstudianteCurso> getEstudianteCursosByEstudiante(Long estudianteId) {
         return estudianteCursoRepository.findByEstudianteCodigoEstudiante(estudianteId);
@@ -63,19 +63,8 @@ public class EstudianteCursoService {
         estudianteCursoRepository.deleteById(id);
     }
 
-
-    public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
-        EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
-                .orElseThrow(() -> new RuntimeException("Relación Estudiante-Curso no encontrada"));
-
-        Asistencia asistencia = new Asistencia();
-        asistencia.setEstudianteCurso(ec);
-        asistencia.setFecha(asistenciaInput.getFecha());
-        asistencia.setEstado(asistenciaInput.getEstado());
-        asistencia.setExcusa(asistenciaInput.getExcusa());
-
-        return asistenciaRepository.save(asistencia);
-    }
+    //registrarAsistencia  VA EN ASISTENCIA y la invoca asignacion
+    /**/
 
     public EstudianteCurso getInscripcion(Long cursoId, Long estudianteId) {
         return estudianteCursoRepository
@@ -83,20 +72,7 @@ public class EstudianteCursoService {
                 .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
     }
 
-    public Float calcularDefinitiva(Long estudianteCursoId) {
-        List<Calificacion> calificaciones = calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
 
-        if (calificaciones.isEmpty()) {
-            throw new RuntimeException("No hay calificaciones para este estudiante en este curso.");
-        }
-
-        float suma = 0f;
-        for (Calificacion c : calificaciones) {
-            suma += c.getNota();
-        }
-
-        return suma / calificaciones.size(); // Promedio simple
-    }
 
     public Boolean comprobarRehabilitacion(Long estudianteCursoId) {
         EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
@@ -115,26 +91,6 @@ public class EstudianteCursoService {
 
 
 
-    public EstudianteCurso matricularCurso(Long estudianteId, Long cursoId) {
-        Estudiante estudiante = estudianteRepository.findById(estudianteId)
-                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
 
-        Curso curso = cursoRepository.findById(cursoId)
-                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
-
-        // Validar si ya está matriculado
-        Optional<EstudianteCurso> yaMatriculado = estudianteCursoRepository.findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId);
-        if (yaMatriculado.isPresent()) {
-            throw new RuntimeException("El estudiante ya está matriculado en este curso.");
-        }
-
-        EstudianteCurso inscripcion = new EstudianteCurso();
-        inscripcion.setEstudiante(estudiante);
-        inscripcion.setCurso(curso);
-        inscripcion.setEstado("Cursando");
-        inscripcion.setHabilitacion(false); // Por defecto no es habilitación
-
-        return estudianteCursoRepository.save(inscripcion);
-    }
 
 }
