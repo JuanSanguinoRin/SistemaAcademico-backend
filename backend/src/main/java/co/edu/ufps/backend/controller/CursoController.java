@@ -1,7 +1,9 @@
 package co.edu.ufps.backend.controller;
 
+import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.Curso;
 import co.edu.ufps.backend.model.Estudiante;
+import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.service.CursoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -78,20 +80,28 @@ public class CursoController {
         }
     }
 
-    @PostMapping("/{id}/inscribir")
-    public ResponseEntity<Void> inscribirEstudiante(@PathVariable Long id, @RequestBody Estudiante estudiante) {
+    @PostMapping("/{cursoId}/inscribir/{estudianteId}")
+    public ResponseEntity<?> inscribirEstudiante(
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteId) {
         try {
-            cursoService.inscribirEstudiante(id, estudiante);
-            return ResponseEntity.ok().build();
+            EstudianteCurso inscripcion = cursoService.inscribirEstudiante(cursoId, estudianteId);
+            return ResponseEntity.ok(inscripcion); // Devuelve la relación creada
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{cursoId}/cancelar/{estudianteId}")
-    public ResponseEntity<Void> cancelarInscripcion(@PathVariable Long cursoId, @PathVariable Long estudianteId) {
-        cursoService.cancelarInscripcion(cursoId, estudianteId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{cursoId}/cancelar-inscripcion/{estudianteId}")
+    public ResponseEntity<?> cancelarInscripcion(
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteId) {
+        try {
+            cursoService.cancelarInscripcion(cursoId, estudianteId);
+            return ResponseEntity.noContent().build(); // 204 - Eliminado correctamente
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}/detalles")
@@ -104,43 +114,29 @@ public class CursoController {
         }
     }
 
-    @PostMapping("/{id}/evaluacion")
-    public ResponseEntity<Void> crearEvaluacion(@PathVariable Long id, @RequestBody String evaluacionData) {
+    @PostMapping("/{cursoId}/calificar/{estudianteId}")
+    public ResponseEntity<?> calificarEstudiante(
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteId,
+            @RequestBody Calificacion calificacion) {
         try {
-            cursoService.crearEvaluacion(id, evaluacionData);
-            return ResponseEntity.ok().build();
+            Calificacion creada = cursoService.crearCalificacion(cursoId, estudianteId, calificacion);
+            return ResponseEntity.ok(creada);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PostMapping("/{id}/tarea")
-    public ResponseEntity<Void> crearTarea(@PathVariable Long id, @RequestBody String tareaData) {
+    @PutMapping("/calificaciones/{id}")
+    public ResponseEntity<?> modificarCalificacion(
+            @PathVariable Long id,
+            @RequestBody Calificacion calificacion) {
         try {
-            cursoService.crearTarea(id, tareaData);
-            return ResponseEntity.ok().build();
+            Calificacion actualizada = cursoService.modificarCalificacion(id, calificacion);
+            return ResponseEntity.ok(actualizada);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/{cursoId}/calificacion/{estudianteId}")
-    public ResponseEntity<Void> modificarCalificacion(@PathVariable Long cursoId, @PathVariable Long estudianteId, @RequestBody Float calificacion) {
-        try {
-            cursoService.modificarCalificacion(cursoId, estudianteId, calificacion);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/{id}/asistencia")
-    public ResponseEntity<Void> generarAsistencia(@PathVariable Long id, @RequestBody String fecha) {
-        try {
-            cursoService.generarAsistencia(id, fecha);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.controller;
 
+import co.edu.ufps.backend.model.Asistencia;
 import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.service.EstudianteCursoService;
 import lombok.RequiredArgsConstructor;
@@ -71,37 +72,35 @@ public class EstudianteCursoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/asistencia")
-    public ResponseEntity<Void> agregarAsistencia(@PathVariable Long id, @RequestBody Map<String, Object> asistencia) {
+    @PostMapping("/{estudianteCursoId}/asistencias")
+    public ResponseEntity<?> registrarAsistencia(
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Asistencia asistencia) {
         try {
-            String fecha = (String) asistencia.get("fecha");
-            Boolean asistio = (Boolean) asistencia.get("asistio");
-            estudianteCursoService.agregarAsistencia(id, fecha, asistio);
-            return ResponseEntity.ok().build();
+            Asistencia creada = estudianteCursoService.registrarAsistencia(estudianteCursoId, asistencia);
+            return ResponseEntity.ok(creada);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}/definitiva")
-    public ResponseEntity<Float> calcularDefinitiva(@PathVariable Long id) {
+    public ResponseEntity<?> calcularDefinitiva(@PathVariable Long id) {
         try {
-            Float definitiva = estudianteCursoService.calcularDefinitiva(id);
-            return ResponseEntity.ok(definitiva);
-        }catch (RuntimeException e){
-
-            return ResponseEntity.badRequest().build();
-
+            Float nota = estudianteCursoService.calcularDefinitiva(id);
+            return ResponseEntity.ok(Map.of("definitiva", nota));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/{id}/rehabilitacion")
-    public ResponseEntity<Boolean> comprobarRehabilitacion(@PathVariable Long id) {
+    @GetMapping("/{id}/habilitacion")
+    public ResponseEntity<?> comprobarRehabilitacion(@PathVariable Long id) {
         try {
-            Boolean puedeRehabilitar = estudianteCursoService.comprobarRehabilitacion(id);
-            return ResponseEntity.ok(puedeRehabilitar);
+            Boolean habilitado = estudianteCursoService.comprobarRehabilitacion(id);
+            return ResponseEntity.ok(Map.of("habilitacion", habilitado));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -115,15 +114,15 @@ public class EstudianteCursoController {
         }
     }
 
-    @PostMapping("/matricular")
-    public ResponseEntity<Void> matricularCurso(
-            @RequestParam Long estudianteId,
-            @RequestParam Long cursoId) {
+    @PostMapping("/matricular/{estudianteId}/{cursoId}")
+    public ResponseEntity<?> matricularCurso(
+            @PathVariable Long estudianteId,
+            @PathVariable Long cursoId) {
         try {
-            estudianteCursoService.matricularCurso(estudianteId, cursoId);
-            return ResponseEntity.ok().build();
+            EstudianteCurso ec = estudianteCursoService.matricularCurso(estudianteId, cursoId);
+            return ResponseEntity.ok(ec);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
