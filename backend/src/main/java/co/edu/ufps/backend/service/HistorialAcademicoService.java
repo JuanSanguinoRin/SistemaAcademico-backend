@@ -50,7 +50,7 @@ public class HistorialAcademicoService {
         historialAcademicoRepository.deleteById(id);
     }
 
-    // Método que retorna los créditos aprobados actuales sin modificar el registro.
+    // Metodo que retorna los créditos aprobados actuales sin modificar el registro.
     public Integer calcularCreditosAprobados(Long id) {
 
         List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(id);
@@ -93,6 +93,13 @@ public class HistorialAcademicoService {
         }
 
         return totalCreditos > 0 ? sumaPonderada / totalCreditos : 0.0;
+    }
+
+    public List<EstudianteCurso> getAllEstudianteCursoByEstudiante(Long estudianteId)
+    {
+
+        return estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
+
     }
 
 }
