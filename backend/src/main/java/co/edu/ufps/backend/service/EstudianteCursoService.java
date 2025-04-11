@@ -77,6 +77,12 @@ public class EstudianteCursoService {
         return asistenciaRepository.save(asistencia);
     }
 
+    public EstudianteCurso getInscripcion(Long cursoId, Long estudianteId) {
+        return estudianteCursoRepository
+                .findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId)
+                .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
+    }
+
     public Float calcularDefinitiva(Long estudianteCursoId) {
         List<Calificacion> calificaciones = calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
 
@@ -106,6 +112,8 @@ public class EstudianteCursoService {
         estudianteCurso.setEstado("cancelado");
         estudianteCursoRepository.save(estudianteCurso);
     }
+
+
 
     public EstudianteCurso matricularCurso(Long estudianteId, Long cursoId) {
         Estudiante estudiante = estudianteRepository.findById(estudianteId)

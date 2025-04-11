@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Asignacion;
+import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.Curso;
 import co.edu.ufps.backend.model.Docente;
 import co.edu.ufps.backend.repository.AsignacionRepository;
@@ -10,21 +11,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AsignacionService {
+
     @Autowired
     private final AsignacionRepository asignacionRepository;
+    private CalificacionService calificacionService;
 
-
+//ESTO NO DEBERIA ESTAR AQUI
     @Autowired
     private final DocenteRepository docenteRepository;
-
+//ESTA FOKIN MONDAD TAMPOCO
     @Autowired
     private final CursoRepository cursoRepository;
+
 
     /**
      * Obtener todas las asignaciones
@@ -75,7 +80,7 @@ public class AsignacionService {
     }
 
 
-
+    //FALTA CARGA HORARIA Y DISPONIBILIDAD HORARIA--------------------------------------
     public Asignacion asignarDocente(Long docenteId, Long cursoId) {
         Docente docente = docenteRepository.findById(docenteId)
                 .orElseThrow(() -> new RuntimeException("Docente no encontrado"));
@@ -95,6 +100,25 @@ public class AsignacionService {
 
         return asignacionRepository.save(asignacion);
     }
+
+    //falta que llame ese metodo desde calificacion
+    public Calificacion crearCalificacionDesdeAsignacion(
+            Long docenteId,
+            Long cursoId,
+            Long estudianteId,
+            String nombre,
+            String tipo,
+            Float nota,
+            Date fecha
+    ) {
+        // 1. Validar que este docente está asignado al curso
+        asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId)
+                .orElseThrow(() -> new RuntimeException("El docente no está asignado a este curso."));
+
+        // 2. Delegar la lógica a CalificacionService
+        return calificacionService.asignarCalificacion(estudianteId, cursoId, nombre, tipo, nota, fecha);
+    }
+
 
     public boolean verificarDisponibilidad() {
 
