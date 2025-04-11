@@ -45,7 +45,7 @@ public class HistorialAcademicoService {
         historialAcademicoRepository.deleteById(id);
     }
 
-    // Lógica de ejemplo para calcular créditos aprobados:
+    // Logica de ejemplo para calcular créditos aprobados:
     // Se asume que el estudiante aprobó 6 cursos y cada uno otorga 5 créditos.
     public HistorialAcademico calcularCreditosAprobados(Long id) {
         return historialAcademicoRepository.findById(id).map(historial -> {
@@ -56,7 +56,7 @@ public class HistorialAcademicoService {
         }).orElseThrow(() -> new RuntimeException("Historial no encontrado"));
     }
 
-    // Método que retorna los créditos aprobados actuales sin modificar el registro.
+    // Metodo que retorna los créditos aprobados actuales sin modificar el registro.
     public Integer obtenerCreditosAprobados(Long id) {
         return historialAcademicoRepository.findById(id)
                 .map(HistorialAcademico::getCreditosAprobados)
