@@ -50,7 +50,7 @@ public class HistorialAcademicoController {
     }
 
     // Endpoint para calcular y actualizar los créditos aprobados con lógica simulada.
-    @PutMapping("/{id}/calcular-creditos")
+    /*@PutMapping("/{id}/calcular-creditos")
     public ResponseEntity<HistorialAcademico> calcularCreditos(@PathVariable Long id) {
         try {
             HistorialAcademico updated = historialAcademicoService.calcularCreditosAprobados(id);
@@ -58,12 +58,12 @@ public class HistorialAcademicoController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
     // Endpoint para obtener los créditos aprobados sin modificar el historial.
     @GetMapping("/{id}/creditos")
     public ResponseEntity<Integer> obtenerCreditos(@PathVariable Long id) {
-        Integer creditos = historialAcademicoService.obtenerCreditosAprobados(id);
+        Integer creditos = historialAcademicoService.calcularCreditosAprobados(id);
         return creditos != null ? ResponseEntity.ok(creditos) : ResponseEntity.notFound().build();
     }
 }

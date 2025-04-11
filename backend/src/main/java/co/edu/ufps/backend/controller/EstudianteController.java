@@ -80,7 +80,7 @@ public class EstudianteController {
         }
     }
 
-    @GetMapping("/{id}/calcular-semestre")
+    /*@GetMapping("/{id}/calcular-semestre")
     public ResponseEntity<Integer> calcularSemestre(@PathVariable Long id) {
         try {
             Integer semestre = estudianteService.calcularSemestre(id);
@@ -88,7 +88,7 @@ public class EstudianteController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
 
 }

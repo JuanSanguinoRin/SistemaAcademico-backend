@@ -1,11 +1,7 @@
 package co.edu.ufps.backend.service;
 
-import co.edu.ufps.backend.model.Calificacion;
-import co.edu.ufps.backend.model.Curso;
-
+import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.repository.CursoRepository;
-
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +12,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CursoService {
     private final CursoRepository cursoRepository;
-
-
-
 
     public List<Curso> getAllCursos() {
         return cursoRepository.findAll();
@@ -42,6 +35,12 @@ public class CursoService {
 
     public List<Curso> getCursosVacacionales(Boolean vacacional) {
         return cursoRepository.findByVacacional(vacacional);
+    }
+
+    // En CursoService.java
+    public Optional<Asignatura> getAsignaturaByCurso(Long cursoId) {
+        Optional<Curso> curso = cursoRepository.findById(cursoId);
+        return curso.map(Curso::getAsignatura);
     }
 
     public Curso createCurso(Curso curso) {
@@ -70,16 +69,9 @@ public class CursoService {
         cursoRepository.deleteById(id);
     }
 
-
     public Curso obtenerDetalles(Long cursoId) {
         return cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new RuntimeException("Curso not found"));
     }
-
-
-
-    //ACA NO DEBERIA ESTAR LA CREACION NI CALIFICACION DE LAS CALIFICACIONES, ESO VA EN ASIGNACION DE DOCENTE
-
-
 
 }

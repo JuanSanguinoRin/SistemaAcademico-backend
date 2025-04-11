@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.model;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,15 +25,7 @@ public class HorarioCurso {
     @JoinColumn(name = "id_curso")
     private Curso curso;
 
-    private Time horaInicio;
-    private Time horaFin;
-
-
-
-    // Métodos de la clase
-    public void modificarHorario() {
-        // Implementación del método
-    }
-
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
 
 }

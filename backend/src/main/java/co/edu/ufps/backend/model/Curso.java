@@ -40,7 +40,7 @@ public class Curso {
 
     private Character grupo;
     private Boolean vacacional;
+    private Integer creditos;
 
-    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL)
-    private List<EstudianteCurso> estudiantes;
+
 }
