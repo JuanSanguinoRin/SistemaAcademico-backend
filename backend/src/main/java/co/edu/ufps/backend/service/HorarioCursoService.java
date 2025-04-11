@@ -42,5 +42,10 @@ public class HorarioCursoService {
     public void deleteHorario(Long id) {
         horarioCursoRepository.deleteById(id);
     }
+
+    // Métodos de la clase
+    public void modificarHorario() {
+        // Implementación del metodo
+    }
 }
 

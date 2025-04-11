@@ -29,10 +29,7 @@ public class HorarioCurso {
 
 
 
-    // Métodos de la clase
-    public void modificarHorario() {
-        // Implementación del método
-    }
+
 
 
 }
