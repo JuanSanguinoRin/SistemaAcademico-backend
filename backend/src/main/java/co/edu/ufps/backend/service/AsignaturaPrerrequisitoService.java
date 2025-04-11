@@ -26,11 +26,8 @@ public class AsignaturaPrerrequisitoService {
         return asignaturaPrerrequisitoRepository.findById(id);
     }
 
-    public Optional<AsignaturaPrerrequisito> getAsignaturaPrerrequisitoByAsignatura(Long asignaturaId)
-    {
-
-        return asignaturaPrerrequisitoRepository.findByAsignaturaId(asignaturaId);
-
+    public List<AsignaturaPrerrequisito> getAllPrerrequisitosByAsignaturaId(Long asignaturaId) {
+        return asignaturaPrerrequisitoRepository.findAllByAsignatura_Id(asignaturaId);
     }
 
     // Crear un nuevo prerrequisito

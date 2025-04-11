@@ -23,15 +23,12 @@ public class HorarioCursoService {
         return horarioCursoRepository.findById(id);
     }
 
-    public Optional<HorarioCurso> getHorarioByCurso(Long id)
-    {
-
-        return horarioCursoRepository.findByCursoId(id);
-
-    }
-
     public HorarioCurso createHorario(HorarioCurso horario) {
         return horarioCursoRepository.save(horario);
+    }
+
+    public List<HorarioCurso> getAllHorariosByCurso(Long cursoId) {
+        return horarioCursoRepository.findAllByCursoId(cursoId);
     }
 
     public HorarioCurso updateHorario(Long id, HorarioCurso horarioDetails) {

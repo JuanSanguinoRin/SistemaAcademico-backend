@@ -23,8 +23,8 @@ public class AsignaturaPrerrequisitoController {
 
     // 🔹 Obtener un prerrequisito por ID
     @GetMapping("/{codigo}")
-    public ResponseEntity<AsignaturaPrerrequisito> getById(@PathVariable Long codigo) {
-        return asignaturaPrerrequisitoService.getAsignaturaPrerrequisitoByCodigo(codigo)
+    public ResponseEntity<AsignaturaPrerrequisito> getById(@PathVariable Long id) {
+        return asignaturaPrerrequisitoService.getAsignaturaPrerrequisitoById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -49,4 +49,19 @@ public class AsignaturaPrerrequisitoController {
         asignaturaPrerrequisitoService.deleteAsignaturaPrerrequisito(codigo);
         return ResponseEntity.noContent().build();
     }
+
+        @GetMapping("/asignatura/{asignaturaId}")
+        public ResponseEntity<List<AsignaturaPrerrequisito>> getAllPrerrequisitosByAsignaturaId(
+                @PathVariable Long asignaturaId) {
+            List<AsignaturaPrerrequisito> prerrequisitos =
+                    asignaturaPrerrequisitoService.getAllPrerrequisitosByAsignaturaId(asignaturaId);
+
+            if (prerrequisitos.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(prerrequisitos);
+        }
+
+
 }

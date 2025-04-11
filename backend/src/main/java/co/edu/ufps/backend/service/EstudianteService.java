@@ -65,4 +65,11 @@ public class EstudianteService {
     public void actualizarHistorialAcademico(Long estudianteId, Semestre semestre) {
 
     }
+
+    public Integer calcularSemestre(Long estudianteId)
+    {
+
+        return 0;
+
+    }
 }

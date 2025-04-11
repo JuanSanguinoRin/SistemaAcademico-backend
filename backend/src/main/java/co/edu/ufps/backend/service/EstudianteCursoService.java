@@ -5,8 +5,11 @@ import co.edu.ufps.backend.repository.EstudianteCursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,8 @@ public class EstudianteCursoService {
     private final EstudianteService estudianteService;
     private final CursoService cursoService;
     private final AsignaturaPrerrequisitoService asignaturaPrerrequisitoService;
+    private final AsignaturaService asignaturaService;
+    private final HorarioCursoService horarioCursoService;
 
     public List<EstudianteCurso> getAllEstudianteCursos() {
         return estudianteCursoRepository.findAll();
@@ -142,10 +147,25 @@ public class EstudianteCursoService {
             throw new RuntimeException("El estudiante ya está matriculado en este curso.");
         }
 
-        // 1. Validar prerrequisitos de la asignatura
-        validarPrerrequisitos(estudianteId, curso.getAsignatura());
+        List<EstudianteCurso> estudiantesMatriculados = this.getEstudianteCursosByCurso(cursoId);
 
-        // 2. Validar solapamiento de horarios
+        int cuposOcupados = estudiantesMatriculados.size();
+
+        if (cuposOcupados >= curso.getCupoMaximo()) {
+            throw new RuntimeException("No hay cupos disponibles en este curso.");
+        }
+
+        Optional<Asignatura> asignaturaOpt = cursoService.getAsignaturaByCurso(cursoId);
+        if (!asignaturaOpt.isPresent()) {
+            throw new RuntimeException("El curso no tiene una asignatura asociada.");
+        }
+
+        Asignatura asignatura = asignaturaOpt.get();
+
+        // Validar prerrequisitos
+        validarPrerrequisitos(estudianteId, asignatura);
+
+        // Validar horarios
         validarHorarios(estudianteId, cursoId);
 
         EstudianteCurso inscripcion = new EstudianteCurso();
@@ -159,23 +179,87 @@ public class EstudianteCursoService {
 
     private void validarPrerrequisitos(Long estudianteId, Asignatura asignatura) {
         // Obtener prerrequisitos de la asignatura
+        List<AsignaturaPrerrequisito> prerrequisitosAsignatura = asignaturaPrerrequisitoService.getAllPrerrequisitosByAsignaturaId(asignatura.getId());
 
+        if (prerrequisitosAsignatura.isEmpty()) {
+            return;
+        }
 
         // Obtener cursos aprobados del estudiante
         List<EstudianteCurso> cursosAprobados = this.getCursosAprobadosByEstudiante(estudianteId);
 
-        // Verificar que todos los prerrequisitos estén aprobados
-        for (AsignaturaPrerrequisito prerreq : prerrequisitos) {
-            boolean aprobado = cursosAprobados.stream()
-                    .anyMatch(ec -> ec.getCurso().getAsignatura().getCodigo().equals(prerreq.getPrerrequisito().getCodigo()));
+        // Crear una lista de IDs de asignaturas aprobadas para facilitar la verificación
+        List<Long> asignaturasAprobadasIds = cursosAprobados.stream()
+                .map(ec -> ec.getCurso().getAsignatura().getId())
+                .collect(Collectors.toList());
 
-            if (!aprobado) {
-                throw new RuntimeException("Prerrequisito no aprobado: " + prerreq.getPrerrequisito().getNombre());
+        // Verificar que todos los prerrequisitos estén aprobados
+        List<Asignatura> prerrequisitosNoAprobados = new ArrayList<>();
+
+        for (AsignaturaPrerrequisito prerreq : prerrequisitosAsignatura) {
+            Long idPrerrequisito = prerreq.getPrerrequisito().getId();
+
+            if (!asignaturasAprobadasIds.contains(idPrerrequisito)) {
+                prerrequisitosNoAprobados.add(prerreq.getPrerrequisito());
+            }
+        }
+
+        if (!prerrequisitosNoAprobados.isEmpty()) {
+            StringBuilder mensaje = new StringBuilder("El estudiante no cumple con los siguientes prerrequisitos: ");
+            prerrequisitosNoAprobados.forEach(a -> mensaje.append(a.getNombre()).append(", "));
+            mensaje.delete(mensaje.length() - 2, mensaje.length());
+
+            throw new RuntimeException(mensaje.toString());
+        }
+    }
+
+    private void validarHorarios(Long estudianteId, Long cursoId) {
+
+        Curso cursoAMatricular = cursoService.getCursoById(cursoId)
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+
+        List<HorarioCurso> horariosNuevoCurso = horarioCursoService.getAllHorariosByCurso(cursoId);
+
+        if (horariosNuevoCurso.isEmpty()) {
+            throw new RuntimeException("El curso no tiene horarios definidos.");
+        }
+
+        // Obtener cursos actuales del estudiante
+        List<EstudianteCurso> cursosActuales = estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(
+                estudianteId, "Cursando");
+
+        // Para cada curso del estudiante, verificar si hay conflicto de horarios
+        for (EstudianteCurso ec : cursosActuales) {
+            List<HorarioCurso> horariosCursoActual = horarioCursoService.getAllHorariosByCurso(ec.getCurso().getId());
+
+            for (HorarioCurso horarioActual : horariosCursoActual) {
+                for (HorarioCurso horarioNuevo : horariosNuevoCurso) {
+                    if (hayConflictoHorario(horarioActual, horarioNuevo)) {
+                        throw new RuntimeException(
+                                "Conflicto de horario con el curso " + ec.getCurso().getNombre() +
+                                        ". Día: " + horarioNuevo.getDia() +
+                                        ", Hora: " + horarioNuevo.getHoraInicio() + " - " + horarioNuevo.getHoraFin());
+                    }
+                }
             }
         }
     }
 
-    // Método para obtener cursos aprobados de un estudiante específico
+    private boolean hayConflictoHorario(HorarioCurso h1, HorarioCurso h2) {
+
+        if (!h1.getDia().equals(h2.getDia())) {
+            return false;
+        }
+
+        LocalTime inicio1 = h1.getHoraInicio();
+        LocalTime fin1 = h1.getHoraFin();
+        LocalTime inicio2 = h2.getHoraInicio();
+        LocalTime fin2 = h2.getHoraFin();
+
+        return (inicio1.isBefore(fin2) && inicio2.isBefore(fin1));
+    }
+
+    // Metodo para obtener cursos aprobados de un estudiante específico
     public List<EstudianteCurso> getCursosAprobadosByEstudiante(Long estudianteId) {
         return estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(estudianteId, "Aprobado");
     }
