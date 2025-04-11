@@ -47,7 +47,6 @@ public class FacturacionService {
         return Optional.empty();
     }
 
-    // Lógica de negocio simulada
 
     // Genera la factura asignando fecha de emisión y estado inicial.
     public Facturacion generarFactura(String numeroFactura) {
