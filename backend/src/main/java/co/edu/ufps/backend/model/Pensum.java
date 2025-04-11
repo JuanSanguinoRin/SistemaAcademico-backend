@@ -21,17 +21,6 @@ public class Pensum {
     private Integer duracion;
     private Integer anio;
 
-    // Métodos de la clase
-    public void agregarAsignatura() {
-        // Implementación del método
-    }
 
-    public void eliminarAsignatura() {
-        // Implementación del método
-    }
-
-    public void modificarPensum() {
-        // Implementación del método
-    }
 
 }

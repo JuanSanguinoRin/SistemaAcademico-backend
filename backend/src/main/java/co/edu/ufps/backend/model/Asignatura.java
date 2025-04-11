@@ -19,13 +19,6 @@ public class Asignatura {
     @JoinColumn(name = "id_Pensum")
     private Pensum asignatura;
 
-    // Métodos de la clase
-    public void agregarPrerrequisito() {
-        // Implementación del método
-    }
 
-    public void eliminarPrerrequisito() {
-        // Implementación del método
-    }
 
 }

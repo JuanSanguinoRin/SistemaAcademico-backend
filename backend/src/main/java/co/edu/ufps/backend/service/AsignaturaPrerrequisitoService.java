@@ -44,4 +44,6 @@ public class AsignaturaPrerrequisitoService {
     public void deleteAsignaturaPrerrequisito(Long codigo) {
         asignaturaPrerrequisitoRepository.deleteById(codigo);
     }
+
+
 }
