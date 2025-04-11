@@ -1,7 +1,11 @@
 package co.edu.ufps.backend.service;
 
-import co.edu.ufps.backend.model.EstudianteCurso;
+import co.edu.ufps.backend.model.*;
+import co.edu.ufps.backend.repository.AsistenciaRepository;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
+import co.edu.ufps.backend.repository.CalificacionRepository;
+import co.edu.ufps.backend.repository.EstudianteRepository;
+import co.edu.ufps.backend.repository.CursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EstudianteCursoService {
     private final EstudianteCursoRepository estudianteCursoRepository;
+    private final AsistenciaRepository asistenciaRepository;
+    private final CalificacionRepository calificacionRepository;
+    private final EstudianteRepository estudianteRepository;
+    private final CursoRepository  cursoRepository;
 
     public List<EstudianteCurso> getAllEstudianteCursos() {
         return estudianteCursoRepository.findAll();
@@ -55,18 +63,40 @@ public class EstudianteCursoService {
         estudianteCursoRepository.deleteById(id);
     }
 
-    public void agregarAsistencia(Long estudianteCursoId, String fecha, Boolean asistio) {
-        // Lógica para agregar asistencia
+
+    public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
+        EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
+                .orElseThrow(() -> new RuntimeException("Relación Estudiante-Curso no encontrada"));
+
+        Asistencia asistencia = new Asistencia();
+        asistencia.setEstudianteCurso(ec);
+        asistencia.setFecha(asistenciaInput.getFecha());
+        asistencia.setEstado(asistenciaInput.getEstado());
+        asistencia.setExcusa(asistenciaInput.getExcusa());
+
+        return asistenciaRepository.save(asistencia);
     }
 
     public Float calcularDefinitiva(Long estudianteCursoId) {
-        // Lógica para calcular nota definitiva
-        return 0.0f; // Placeholder
+        List<Calificacion> calificaciones = calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
+
+        if (calificaciones.isEmpty()) {
+            throw new RuntimeException("No hay calificaciones para este estudiante en este curso.");
+        }
+
+        float suma = 0f;
+        for (Calificacion c : calificaciones) {
+            suma += c.getNota();
+        }
+
+        return suma / calificaciones.size(); // Promedio simple
     }
 
     public Boolean comprobarRehabilitacion(Long estudianteCursoId) {
-        // Lógica para comprobar si el estudiante puede hacer habilitación
-        return false; // Placeholder
+        EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
+                .orElseThrow(() -> new RuntimeException("EstudianteCurso no encontrado"));
+
+        return Boolean.TRUE.equals(ec.getHabilitacion());
     }
 
     public void cancelar(Long estudianteCursoId) {
@@ -77,7 +107,26 @@ public class EstudianteCursoService {
         estudianteCursoRepository.save(estudianteCurso);
     }
 
-    public void matricularCurso(Long estudianteId, Long cursoId) {
-        // Lógica para matricular curso
+    public EstudianteCurso matricularCurso(Long estudianteId, Long cursoId) {
+        Estudiante estudiante = estudianteRepository.findById(estudianteId)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+
+        Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+
+        // Validar si ya está matriculado
+        Optional<EstudianteCurso> yaMatriculado = estudianteCursoRepository.findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId);
+        if (yaMatriculado.isPresent()) {
+            throw new RuntimeException("El estudiante ya está matriculado en este curso.");
+        }
+
+        EstudianteCurso inscripcion = new EstudianteCurso();
+        inscripcion.setEstudiante(estudiante);
+        inscripcion.setCurso(curso);
+        inscripcion.setEstado("Cursando");
+        inscripcion.setHabilitacion(false); // Por defecto no es habilitación
+
+        return estudianteCursoRepository.save(inscripcion);
     }
+
 }

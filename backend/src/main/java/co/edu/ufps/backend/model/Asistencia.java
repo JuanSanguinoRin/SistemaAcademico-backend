@@ -25,19 +25,7 @@ public class Asistencia {
     private String estado;
     private String excusa;
 
-    
-    // Methods from UML
-    public void registrarAsistencia() {
-        // Implementation
-    }
-    
-    public void justificarInasistencia() {
-        // Implementation
-    }
-    
-    public void cambiarAsistencia() {
-        // Implementation
-    }
+
     
 
 }
