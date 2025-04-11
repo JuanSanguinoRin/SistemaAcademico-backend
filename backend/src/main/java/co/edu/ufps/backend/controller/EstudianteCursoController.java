@@ -73,15 +73,7 @@ public class EstudianteCursoController {
     }
 
 
-    @GetMapping("/{id}/definitiva")
-    public ResponseEntity<?> calcularDefinitiva(@PathVariable Long id) {
-        try {
-            Float nota = estudianteCursoService.calcularDefinitiva(id);
-            return ResponseEntity.ok(Map.of("definitiva", nota));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
 
     @GetMapping("/{id}/habilitacion")
     public ResponseEntity<?> comprobarRehabilitacion(@PathVariable Long id) {
@@ -103,15 +95,5 @@ public class EstudianteCursoController {
         }
     }
 
-    @PostMapping("/matricular/{estudianteId}/{cursoId}")
-    public ResponseEntity<?> matricularCurso(
-            @PathVariable Long estudianteId,
-            @PathVariable Long cursoId) {
-        try {
-            EstudianteCurso ec = estudianteCursoService.matricularCurso(estudianteId, cursoId);
-            return ResponseEntity.ok(ec);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
 }
