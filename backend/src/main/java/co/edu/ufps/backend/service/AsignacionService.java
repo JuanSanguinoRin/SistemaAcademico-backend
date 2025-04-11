@@ -9,22 +9,28 @@ import co.edu.ufps.backend.repository.DocenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import co.edu.ufps.backend.model.EstudianteCurso;
+import co.edu.ufps.backend.model.Calificacion;
+import co.edu.ufps.backend.model.Curso;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AsignacionService {
+
     @Autowired
     private final AsignacionRepository asignacionRepository;
 
-
+//ESTO NO DEBERIA ESTAR AQUI
     @Autowired
     private final DocenteRepository docenteRepository;
-
+//ESTA FOKIN MONDAD TAMPOCO
     @Autowired
     private final CursoRepository cursoRepository;
+
 
     /**
      * Obtener todas las asignaciones
@@ -95,6 +101,56 @@ public class AsignacionService {
 
         return asignacionRepository.save(asignacion);
     }
+
+
+    //TODA ESTA MONDA ESTA MAL, AQUI SE LLAMA AL METODO DESDE LA CLASE ASIGNACION, NO SE HACE DESDE CERO
+    //MENDOZA ES UN REVERENDO PENDEJO
+    /*public Calificacion crearCalificacion(
+            Long estudianteId,
+            Long cursoId,
+            String nombre,
+            String tipo,
+            Float nota,
+            Date fecha
+    ) {
+        // 1. Obtener la inscripción del estudiante al curso
+        EstudianteCurso ec = estudianteCursoService.getInscripcion(cursoId, estudianteId);
+
+        // 2. Validar estado "Cursando"
+        if (!"Cursando".equalsIgnoreCase(ec.getEstado())) {
+            throw new RuntimeException("El estudiante no está en estado 'Cursando' para este curso.");
+        }
+
+        // 3. Validar que no exista ya una calificación con ese tipo
+        boolean tipoYaExiste = calificacionService.tipoYaExisteParaEstudianteCurso(ec.getId(), tipo);
+        if (tipoYaExiste) {
+            throw new RuntimeException("Ya existe una calificación de tipo '" + tipo + "' para este estudiante.");
+        }
+
+        // 4. Crear calificación desde cero
+        Calificacion calificacion = new Calificacion();
+        calificacion.setNombre(nombre);
+        calificacion.setTipo(tipo);
+        calificacion.setNota(nota);
+        calificacion.setFecha(fecha);
+        calificacion.setEstudianteCurso(ec);
+
+        // 5. Guardar
+        return calificacionService.guardarCalificacion(calificacion);
+    }
+
+    public Calificacion modificarCalificacion(Long id, String nombre, String tipo, Float nota, Date fecha) {
+        Calificacion calificacion = getById(id);
+
+        if (nombre != null) calificacion.setNombre(nombre);
+        if (tipo != null) calificacion.setTipo(tipo);
+        if (nota != null) calificacion.setNota(nota);
+        if (fecha != null) calificacion.setFecha(fecha);
+
+        return calificacionRepository.save(calificacion);
+    }*/
+
+
 
     public boolean verificarDisponibilidad() {
 

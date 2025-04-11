@@ -20,6 +20,6 @@ public class EstudianteCurso {
     @JoinColumn(name = "estudiante_id")
     private Estudiante estudiante;
 
-    private String estado; // Aprobado, cursando, perdido
+    private String estado; // Aprobado, cursando, perdido, cancelado
     private Boolean habilitacion;
 }
