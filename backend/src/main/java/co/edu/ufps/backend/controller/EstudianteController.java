@@ -90,13 +90,5 @@ public class EstudianteController {
         }
     }
 
-    @PostMapping("/{id}/actualizar-historial")
-    public ResponseEntity<Void> actualizarHistorialAcademico(@PathVariable Long id, @RequestBody Semestre semestre) {
-        try {
-            estudianteService.actualizarHistorialAcademico(id, semestre);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 }

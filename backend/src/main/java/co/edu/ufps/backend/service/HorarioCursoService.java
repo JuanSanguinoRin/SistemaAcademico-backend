@@ -65,7 +65,7 @@ public class HorarioCursoService {
 
 
     //comprobar que el horario no este en conflicto con otro horario o Salon. se debe invocar antes de asignarle horario a un curso o profesor o estudiante
-    private boolean seSolapan(HorarioCurso h1, HorarioCurso h2) {
+    public boolean seSolapan(HorarioCurso h1, HorarioCurso h2) {
         // Deben ser el mismo día
         if (!h1.getDia().equals(h2.getDia())) return false;
 
@@ -73,6 +73,7 @@ public class HorarioCursoService {
         return !h1.getHoraFin().before(h2.getHoraInicio()) &&
                 !h1.getHoraInicio().after(h2.getHoraFin());
     }
+
 
     public boolean horarioDisponible(HorarioCurso nuevoHorario) {
         List<HorarioCurso> existentes = horarioCursoRepository.findAll();
