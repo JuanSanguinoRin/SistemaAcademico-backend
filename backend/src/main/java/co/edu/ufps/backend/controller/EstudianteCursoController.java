@@ -72,17 +72,6 @@ public class EstudianteCursoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{estudianteCursoId}/asistencias")
-    public ResponseEntity<?> registrarAsistencia(
-            @PathVariable Long estudianteCursoId,
-            @RequestBody Asistencia asistencia) {
-        try {
-            Asistencia creada = estudianteCursoService.registrarAsistencia(estudianteCursoId, asistencia);
-            return ResponseEntity.ok(creada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @GetMapping("/{id}/definitiva")
     public ResponseEntity<?> calcularDefinitiva(@PathVariable Long id) {
