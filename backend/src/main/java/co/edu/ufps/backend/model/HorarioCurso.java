@@ -13,11 +13,8 @@ public class HorarioCurso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private DiaSemana dia;
-
-    private Time horaInicio;
-    private Time horaFin;
+    private String dia;
+    private Date hora;
 
     @ManyToOne
     @JoinColumn(name = "id_aula")
@@ -27,7 +24,15 @@ public class HorarioCurso {
     @JoinColumn(name = "id_curso")
     private Curso curso;
 
+    private Time horaInicio;
+    private Time horaFin;
 
+
+
+    // Métodos de la clase
+    public void modificarHorario() {
+        // Implementación del método
+    }
 
 
 }

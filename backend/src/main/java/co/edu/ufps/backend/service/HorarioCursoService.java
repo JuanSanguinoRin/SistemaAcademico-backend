@@ -28,26 +28,19 @@ public class HorarioCursoService {
     }
 
     public HorarioCurso updateHorario(Long id, HorarioCurso horarioDetails) {
-        return horarioCursoRepository.findById(id)
-                .map(horario -> {
-                    horario.setDia(horarioDetails.getDia());
-                    horario.setHoraInicio(horarioDetails.getHoraInicio());
-                    horario.setHoraFin(horarioDetails.getHoraFin());
-                    horario.setAula(horarioDetails.getAula());
-                    horario.setCurso(horarioDetails.getCurso());
-                    return horarioCursoRepository.save(horario);
-                })
-                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+        return horarioCursoRepository.findById(id).map(horario -> {
+            horario.setDia(horarioDetails.getDia());
+            horario.setHora(horarioDetails.getHora());
+            horario.setAula(horarioDetails.getAula());
+            horario.setCurso(horarioDetails.getCurso());
+            horario.setHoraInicio(horarioDetails.getHoraInicio());
+            horario.setHoraFin(horarioDetails.getHoraFin());
+            return horarioCursoRepository.save(horario);
+        }).orElseThrow(() -> new RuntimeException("HorarioCurso not found"));
     }
 
     public void deleteHorario(Long id) {
-        HorarioCurso horario = horarioCursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
-
-        horarioCursoRepository.delete(horario);
+        horarioCursoRepository.deleteById(id);
     }
-
-
-
 }
 
