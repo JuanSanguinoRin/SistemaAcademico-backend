@@ -58,7 +58,7 @@ public class CalificacionService {
     }
 
 
-    public Calificacion crearCalificacion(
+    public Calificacion asignarCalificacion(
             Long estudianteId,
             Long cursoId,
             String nombre,

@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Asignacion;
+import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.Curso;
 import co.edu.ufps.backend.model.Docente;
 import co.edu.ufps.backend.repository.AsignacionRepository;
@@ -9,9 +10,6 @@ import co.edu.ufps.backend.repository.DocenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import co.edu.ufps.backend.model.EstudianteCurso;
-import co.edu.ufps.backend.model.Calificacion;
-import co.edu.ufps.backend.model.Curso;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +21,7 @@ public class AsignacionService {
 
     @Autowired
     private final AsignacionRepository asignacionRepository;
+    private CalificacionService calificacionService;
 
 //ESTO NO DEBERIA ESTAR AQUI
     @Autowired
@@ -81,7 +80,7 @@ public class AsignacionService {
     }
 
 
-
+    //FALTA CARGA HORARIA Y DISPONIBILIDAD HORARIA--------------------------------------
     public Asignacion asignarDocente(Long docenteId, Long cursoId) {
         Docente docente = docenteRepository.findById(docenteId)
                 .orElseThrow(() -> new RuntimeException("Docente no encontrado"));
@@ -102,54 +101,23 @@ public class AsignacionService {
         return asignacionRepository.save(asignacion);
     }
 
-
-    //TODA ESTA MONDA ESTA MAL, AQUI SE LLAMA AL METODO DESDE LA CLASE ASIGNACION, NO SE HACE DESDE CERO
-    //MENDOZA ES UN REVERENDO PENDEJO
-    /*public Calificacion crearCalificacion(
-            Long estudianteId,
+    //falta que llame ese metodo desde calificacion
+    public Calificacion crearCalificacionDesdeAsignacion(
+            Long docenteId,
             Long cursoId,
+            Long estudianteId,
             String nombre,
             String tipo,
             Float nota,
             Date fecha
     ) {
-        // 1. Obtener la inscripción del estudiante al curso
-        EstudianteCurso ec = estudianteCursoService.getInscripcion(cursoId, estudianteId);
+        // 1. Validar que este docente está asignado al curso
+        asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId)
+                .orElseThrow(() -> new RuntimeException("El docente no está asignado a este curso."));
 
-        // 2. Validar estado "Cursando"
-        if (!"Cursando".equalsIgnoreCase(ec.getEstado())) {
-            throw new RuntimeException("El estudiante no está en estado 'Cursando' para este curso.");
-        }
-
-        // 3. Validar que no exista ya una calificación con ese tipo
-        boolean tipoYaExiste = calificacionService.tipoYaExisteParaEstudianteCurso(ec.getId(), tipo);
-        if (tipoYaExiste) {
-            throw new RuntimeException("Ya existe una calificación de tipo '" + tipo + "' para este estudiante.");
-        }
-
-        // 4. Crear calificación desde cero
-        Calificacion calificacion = new Calificacion();
-        calificacion.setNombre(nombre);
-        calificacion.setTipo(tipo);
-        calificacion.setNota(nota);
-        calificacion.setFecha(fecha);
-        calificacion.setEstudianteCurso(ec);
-
-        // 5. Guardar
-        return calificacionService.guardarCalificacion(calificacion);
+        // 2. Delegar la lógica a CalificacionService
+        return calificacionService.asignarCalificacion(estudianteId, cursoId, nombre, tipo, nota, fecha);
     }
-
-    public Calificacion modificarCalificacion(Long id, String nombre, String tipo, Float nota, Date fecha) {
-        Calificacion calificacion = getById(id);
-
-        if (nombre != null) calificacion.setNombre(nombre);
-        if (tipo != null) calificacion.setTipo(tipo);
-        if (nota != null) calificacion.setNota(nota);
-        if (fecha != null) calificacion.setFecha(fecha);
-
-        return calificacionRepository.save(calificacion);
-    }*/
-
 
 
     public boolean verificarDisponibilidad() {
