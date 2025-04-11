@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.service;
-
+import co.edu.ufps.backend.repository.AsignaturaPrerrequisitoRepository;
 import co.edu.ufps.backend.model.Asignatura;
+import co.edu.ufps.backend.model.AsignaturaPrerrequisito;
 import co.edu.ufps.backend.repository.AsignaturaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,11 @@ public class AsignaturaService {
 
     @Autowired
     private final AsignaturaRepository asignaturaRepository;
+
+    @Autowired
+    private final AsignaturaPrerrequisitoService asignaturaPrerrequisitoService;
+
+    private final AsignaturaPrerrequisitoRepository asignaturaPrerrequisitoRepository;
 
     // Obtener todas las asignaturas
     public List<Asignatura> getAllAsignaturas() {
@@ -46,5 +52,31 @@ public class AsignaturaService {
     // Eliminar una asignatura por su código
     public void deleteAsignatura(Long codigo) {
         asignaturaRepository.deleteById(codigo);
+    }
+
+    // Métodos de la clase
+    public AsignaturaPrerrequisito agregarPrerrequisito(Long codigoAsignatura, Long codigoPrerrequisito) {
+        Asignatura asignatura = asignaturaRepository.findById(codigoAsignatura)
+                .orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
+
+        Asignatura prerrequisito = asignaturaRepository.findById(codigoPrerrequisito)
+                .orElseThrow(() -> new RuntimeException("Prerrequisito no encontrado"));
+
+        AsignaturaPrerrequisito nuevaRelacion = new AsignaturaPrerrequisito();
+        nuevaRelacion.setCodigo(System.currentTimeMillis()); // O usa un ID autogenerado
+        nuevaRelacion.setAsignatura(asignatura);
+        nuevaRelacion.setPrerrequisito(prerrequisito);
+
+        return asignaturaPrerrequisitoService.createAsignaturaPrerrequisito(nuevaRelacion);
+
+    }
+
+    public void eliminarPrerrequisito(Long codigoAsignatura, Long codigoPrerrequisito) {
+        AsignaturaPrerrequisito relacion = asignaturaPrerrequisitoRepository
+                .findByAsignatura_CodigoAndPrerrequisito_Codigo(codigoAsignatura, codigoPrerrequisito)
+                .orElseThrow(() -> new RuntimeException("Relación de prerrequisito no encontrada"));
+
+
+        asignaturaPrerrequisitoRepository.delete(relacion);
     }
 }

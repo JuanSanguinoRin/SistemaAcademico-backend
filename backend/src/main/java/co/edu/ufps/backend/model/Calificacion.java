@@ -22,23 +22,5 @@ public class Calificacion {
     @OneToOne
     @JoinColumn(name = "estudiante")
     private EstudianteCurso estudianteCurso;
-    
-    // Methods from UML
-    public void modificarEvaluacion() {
-        // Implementation
-    }
-    
-    public void eliminarEvaluacion() {
-        // Implementation
-    }
-    
-    public String obtenerDetalles() {
-        // Implementation
-        return "";
-    }
-    
-    public void calificar() {
-        // Implementation
-    }
 
 }

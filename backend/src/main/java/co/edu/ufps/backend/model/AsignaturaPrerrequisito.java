@@ -15,14 +15,13 @@ public class AsignaturaPrerrequisito {
     @OneToOne
     @JoinColumn(name = "codigo_Asignatura")
     private Asignatura asignatura;
+
     @OneToOne
     @JoinColumn(name = "codigo_AsignaturaPrerrequisito")
     private Asignatura prerrequisito;
 
 
-    // Métodos de la clase
-    public void modificarAsignatura() {
-        // Implementación del método
-    }
+
+
 
 }

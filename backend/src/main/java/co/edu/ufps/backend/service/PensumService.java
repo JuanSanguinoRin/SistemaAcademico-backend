@@ -1,6 +1,8 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.Asignatura;
 import co.edu.ufps.backend.model.Pensum;
+import co.edu.ufps.backend.repository.AsignaturaRepository;
 import co.edu.ufps.backend.repository.PensumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class PensumService {
 
     @Autowired
     private final PensumRepository pensumRepository;
+
+    @Autowired
+    private final AsignaturaRepository asignaturaRepository;
 
     // Obtener todos los pensums
     public List<Pensum> getAllPensums() {
@@ -46,5 +51,31 @@ public class PensumService {
     // Eliminar un pensum por su ID
     public void deletePensum(Long id) {
         pensumRepository.deleteById(id);
+    }
+
+    // Agregar asignatura a un pensum
+    public Asignatura agregarAsignatura(Long idPensum, Asignatura asignatura) {
+        Pensum pensum = pensumRepository.findById(idPensum)
+                .orElseThrow(() -> new RuntimeException("Pensum no encontrado"));
+
+        asignatura.setAsignatura(pensum);
+        return asignaturaRepository.save(asignatura);
+    }
+
+    // Eliminar una asignatura de un pensum
+    public void eliminarAsignatura(Long codigoAsignatura) {
+        Asignatura asignatura = asignaturaRepository.findById(codigoAsignatura)
+                .orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
+
+        asignaturaRepository.delete(asignatura);
+    }
+
+    // Modificar información del pensum (puede servir como helper adicional)
+    public Pensum modificarPensum(Long id, String nuevoNombre, Integer nuevaDuracion) {
+        return pensumRepository.findById(id).map(pensum -> {
+            pensum.setNombre(nuevoNombre);
+            pensum.setDuracion(nuevaDuracion);
+            return pensumRepository.save(pensum);
+        }).orElseThrow(() -> new RuntimeException("Pensum no encontrado"));
     }
 }
