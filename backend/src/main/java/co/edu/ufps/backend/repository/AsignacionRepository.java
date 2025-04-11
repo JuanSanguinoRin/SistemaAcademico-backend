@@ -2,4 +2,9 @@ package co.edu.ufps.backend.repository;
 import co.edu.ufps.backend.model.Asignacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {}
+import java.util.Optional;
+
+public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
+    Optional<Asignacion> findByCursoId(Long cursoId);
+    Optional<Asignacion> findByDocenteIdAndCursoId(Long docenteId, Long cursoId);
+}

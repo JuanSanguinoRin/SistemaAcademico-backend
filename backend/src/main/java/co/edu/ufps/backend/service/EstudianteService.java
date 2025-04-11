@@ -1,18 +1,21 @@
 package co.edu.ufps.backend.service;
 
-import co.edu.ufps.backend.model.Estudiante;
-import co.edu.ufps.backend.model.Semestre;
+import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.repository.EstudianteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class EstudianteService {
     private final EstudianteRepository estudianteRepository;
+    private final EstudianteCursoService estudianteCursoService;
+    private final HistorialAcademicoService historialAcademicoService;
 
     public List<Estudiante> getAllEstudiantes() {
         return estudianteRepository.findAll();
@@ -56,20 +59,28 @@ public class EstudianteService {
         return estudiante.getPromedioPonderado();
     }
 
-    public void matricularCurso(Long estudianteId) {
+    //meteer en el controller
+    public int calcularSemestre(Long estudianteId) {
+        // 1. Obtener todos los cursos del estudiante
+        List<EstudianteCurso> cursosEstudiante = estudianteCursoService.getEstudianteCursosByEstudiante(estudianteId);
 
+        // 2. Filtrar por cursos aprobados
+        List<Integer> semestresAprobados = cursosEstudiante.stream()
+                .filter(ec -> "Aprobado".equalsIgnoreCase(ec.getEstado()))
+                .map(ec -> {
+                    Curso curso = ec.getCurso();
+                    if (curso != null && curso.getAsignatura() != null) {
+                        return curso.getAsignatura().getSemestre();
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
 
-
+        // 3. Retornar el semestre más bajo aprobado o lanzar excepción si no hay
+        return semestresAprobados.stream()
+                .min(Integer::compareTo)
+                .orElseThrow(() -> new RuntimeException("El estudiante no ha aprobado asignaturas con semestre definido."));
     }
 
-    public void actualizarHistorialAcademico(Long estudianteId, Semestre semestre) {
-
-    }
-
-    public Integer calcularSemestre(Long estudianteId)
-    {
-
-        return 0;
-
-    }
 }

@@ -17,7 +17,7 @@ public class Calificacion {
     private Long id;
     private String nombre;
     private Date fecha;
-    private String tipo;
+    private String tipo; //P1, P2, P3, EX, H
     private Float nota;
     @OneToOne
     @JoinColumn(name = "estudiante")

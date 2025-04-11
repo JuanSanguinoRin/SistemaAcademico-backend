@@ -1,7 +1,11 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.*;
+import co.edu.ufps.backend.repository.AsistenciaRepository;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
+import co.edu.ufps.backend.repository.CalificacionRepository;
+import co.edu.ufps.backend.repository.EstudianteRepository;
+import co.edu.ufps.backend.repository.CursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +34,12 @@ public class EstudianteCursoService {
     public Optional<EstudianteCurso> getEstudianteCursoById(Long id) {
         return estudianteCursoRepository.findById(id);
     }
+    //es lo mismo que getEstudianteCursoById pero sirve para suponer que siempre se encuentr el id, se usara solo en el backend
+    public EstudianteCurso getById(Long id) {
+        return estudianteCursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Relación Estudiante-Curso no encontrada"));
+    }
+
 
     public List<EstudianteCurso> getEstudianteCursosByEstudiante(Long estudianteId) {
         return estudianteCursoRepository.findByEstudianteCodigoEstudiante(estudianteId);
@@ -64,18 +74,10 @@ public class EstudianteCursoService {
     public void deleteEstudianteCurso(Long id) {
         estudianteCursoRepository.deleteById(id);
     }
-
-    public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
-        EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
-                .orElseThrow(() -> new RuntimeException("Relación Estudiante-Curso no encontrada"));
-
-        Asistencia asistencia = new Asistencia();
-        asistencia.setEstudianteCurso(ec);
-        asistencia.setFecha(asistenciaInput.getFecha());
-        asistencia.setEstado(asistenciaInput.getEstado());
-        asistencia.setExcusa(asistenciaInput.getExcusa());
-
-        return asistenciaService.createAsistencia(asistencia);
+    public EstudianteCurso getInscripcion(Long cursoId, Long estudianteId) {
+        return estudianteCursoRepository
+                .findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId)
+                .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
     }
 
     public Float calcularDefinitiva(Long estudianteCursoId) {

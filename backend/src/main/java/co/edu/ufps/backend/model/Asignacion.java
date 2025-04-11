@@ -22,19 +22,8 @@ public class Asignacion {
     @ManyToOne
     @JoinColumn(name = "codigo")
     private Curso curso;
-    
-    // Constructor
 
-    
-    // Métodos específicos
-    public void asignarDocente() {
-        // Implementación del método
-    }
-    
-    public boolean verificarDisponibilidad() {
-        // Implementación del método
-        return false;
-    }
+
     
 
 }

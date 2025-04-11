@@ -17,9 +17,6 @@ public class Semestre {
     private Integer anio;
     private Integer periodo;
     
-    // Métodos específicos
-    public void consultarSemestre() {
-        // Implementación del método
-    }
+
 
 }

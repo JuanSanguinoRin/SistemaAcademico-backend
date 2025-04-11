@@ -12,6 +12,7 @@ import lombok.*;
 public class PersonalAdministrativo extends Persona {
     // Atributos (según UML)
     @Column(nullable = false, unique = true)
+    @Id
     private Long id;
 
     private String cargo;
