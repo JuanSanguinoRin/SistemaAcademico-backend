@@ -16,8 +16,8 @@ import java.util.Optional;
 public class CalificacionService {
     @Autowired
     private final CalificacionRepository calificacionRepository;
-    private final EstudianteCursoService estudianteCursoService;
-    private final CalificacionService calificacionService;
+    //private final EstudianteCursoService estudianteCursoService;
+    //private final CalificacionService calificacionService;
 
     public List<Calificacion> getAllCalificaciones() {
         return calificacionRepository.findAll();
@@ -65,7 +65,7 @@ public class CalificacionService {
     }
 
 
-    public Calificacion asignarCalificacion(
+    /*public Calificacion asignarCalificacion(
             Long estudianteId,
             Long cursoId,
             String nombre,
@@ -74,7 +74,7 @@ public class CalificacionService {
             Date fecha
     ) {
         // 1. Obtener la inscripción del estudiante al curso
-        EstudianteCurso ec = estudianteCursoService.getInscripcion(cursoId, estudianteId);
+        //EstudianteCurso ec = estudianteCursoService.getInscripcion(cursoId, estudianteId);
 
         // 2. Validar estado "Cursando"
         if (!"Cursando".equalsIgnoreCase(ec.getEstado())) {
@@ -97,9 +97,15 @@ public class CalificacionService {
 
         // 5. Guardar
         return calificacionService.guardarCalificacion(calificacion);
-    }
+    }*/
 
     public Calificacion guardarCalificacion(Calificacion calificacion) {
         return calificacionRepository.save(calificacion);
+    }
+
+    public Calificacion asignarCalificacion(Long estudianteId, Long cursoId, String nombre, String tipo, Float nota, Date fecha) {
+
+        return null;
+
     }
 }

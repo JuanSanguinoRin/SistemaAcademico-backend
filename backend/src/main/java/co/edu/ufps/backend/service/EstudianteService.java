@@ -14,8 +14,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EstudianteService {
     private final EstudianteRepository estudianteRepository;
-    private final EstudianteCursoService estudianteCursoService;
-    private final HistorialAcademicoService historialAcademicoService;
+    //private final EstudianteCursoService estudianteCursoService;
+    //private final HistorialAcademicoService historialAcademicoService;
 
     public List<Estudiante> getAllEstudiantes() {
         return estudianteRepository.findAll();
@@ -60,7 +60,7 @@ public class EstudianteService {
     }
 
     //meteer en el controller
-    public int calcularSemestre(Long estudianteId) {
+    /*public int calcularSemestre(Long estudianteId) {
         // 1. Obtener todos los cursos del estudiante
         List<EstudianteCurso> cursosEstudiante = estudianteCursoService.getEstudianteCursosByEstudiante(estudianteId);
 
@@ -81,6 +81,8 @@ public class EstudianteService {
         return semestresAprobados.stream()
                 .min(Integer::compareTo)
                 .orElseThrow(() -> new RuntimeException("El estudiante no ha aprobado asignaturas con semestre definido."));
-    }
+    }*/
 
+    public void actualizarHistorialAcademico(Long id, Semestre semestre) {
+    }
 }

@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
 public class HorarioCursoService {
-    @Autowired
+
     private final HorarioCursoRepository horarioCursoRepository;
 
     public List<HorarioCurso> getAllHorarios() {
@@ -74,8 +75,8 @@ public class HorarioCursoService {
         if (!h1.getDia().equals(h2.getDia())) return false;
 
         // Validamos solapamiento en hora (intersección)
-        return !h1.getHoraFin().before(h2.getHoraInicio()) &&
-                !h1.getHoraInicio().after(h2.getHoraFin());
+        return !h1.getHoraFin().isBefore(h2.getHoraInicio()) &&
+                !h1.getHoraInicio().isAfter(h2.getHoraFin());
     }
 
     public boolean horarioDisponible(HorarioCurso nuevoHorario) {
