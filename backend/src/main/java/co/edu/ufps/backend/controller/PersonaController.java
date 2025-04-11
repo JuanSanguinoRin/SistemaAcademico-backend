@@ -24,10 +24,10 @@ public class PersonaController {
         return ResponseEntity.ok(personaService.getAllPersonas());
     }
 
-    // Obtener una persona por cédula
+    // Obtener una persona por id
     @GetMapping("/{id}")
-    public ResponseEntity<Persona> getPersonaByCedula(@PathVariable Long cedula) {
-        Optional<Persona> persona = personaService.getPersonaByCedula(cedula);
+    public ResponseEntity<Persona> getPersonaByCedula(@PathVariable Long id) {
+        Optional<Persona> persona = personaService.getPersonaByCedula(id);
         return persona.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -45,9 +45,9 @@ public class PersonaController {
 
     // Modificar datos de una persona
     @PutMapping("/{id}")
-    public ResponseEntity<Persona> modificarDatos(@PathVariable Long cedula, @RequestBody Persona personaDetalles) {
+    public ResponseEntity<Persona> modificarDatos(@PathVariable Long id, @RequestBody Persona personaDetalles) {
         try {
-            Persona personaActualizada = personaService.modificarDatos(cedula, personaDetalles);
+            Persona personaActualizada = personaService.modificarDatos(id, personaDetalles);
             return ResponseEntity.ok(personaActualizada);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -56,15 +56,15 @@ public class PersonaController {
 
     // Eliminar datos de una persona (eliminación lógica)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarDatos(@PathVariable Long cedula) {
+    public ResponseEntity<Void> eliminarDatos(@PathVariable Long id) {
         try {
-            personaService.eliminarDatos(cedula);
+            personaService.eliminarDatos(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
-
+    // eesto todavia no
     @PostMapping("/{id}/reservas")
     public ResponseEntity<?> crearReservaParaPersona(
             @PathVariable Long cedula,
