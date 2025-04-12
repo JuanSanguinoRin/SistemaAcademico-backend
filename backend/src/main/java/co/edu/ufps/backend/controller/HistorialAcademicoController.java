@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.controller;
 
+import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.HistorialAcademico;
 import co.edu.ufps.backend.service.HistorialAcademicoService;
 import lombok.RequiredArgsConstructor;
@@ -66,4 +67,14 @@ public class HistorialAcademicoController {
         Integer creditos = historialAcademicoService.calcularCreditosAprobados(id);
         return creditos != null ? ResponseEntity.ok(creditos) : ResponseEntity.notFound().build();
     }
+
+    // Nuevo endpoint para obtener calificaciones
+    @GetMapping("/estudiante-curso/{estudianteCursoId}/calificaciones")
+    public ResponseEntity<List<Calificacion>> getCalificacionesByEstudianteCurso(
+            @PathVariable Long estudianteCursoId) {
+        List<Calificacion> calificaciones = historialAcademicoService
+                .getCalificacionesByEstudianteCurso(estudianteCursoId);
+        return ResponseEntity.ok(calificaciones);
+    }
+
 }
