@@ -107,4 +107,11 @@ public class HistorialAcademicoService {
 
     }
 
+    public List<Calificacion>  getCalificacionesByEstudianteCurso(Long estudianteCursoId)
+    {
+
+        return calificacionService.getCalificacionesByEstudianteCurso(estudianteCursoService.getById(estudianteCursoId));
+
+    }
+
 }
