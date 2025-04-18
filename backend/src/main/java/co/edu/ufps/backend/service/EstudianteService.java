@@ -40,8 +40,6 @@ public class EstudianteService {
     public Estudiante updateEstudiante(Long id, Estudiante estudianteDetails) {
         return estudianteRepository.findById(id).map(estudiante -> {
             estudiante.setPrograma(estudianteDetails.getPrograma());
-            estudiante.setCreditosAprobados(estudianteDetails.getCreditosAprobados());
-            estudiante.setPromedioPonderado(estudianteDetails.getPromedioPonderado());
             estudiante.setPersona(estudianteDetails.getPersona());
             return estudianteRepository.save(estudiante);
         }).orElseThrow(() -> new RuntimeException("Estudiante not found"));
@@ -51,13 +49,13 @@ public class EstudianteService {
         estudianteRepository.deleteById(id);
     }
 
-    public Float calcularPonderado(Long estudianteId) {
+    /*public Float calcularPonderado(Long estudianteId) {
         // Lógica para calcular el promedio ponderado
         Estudiante estudiante = estudianteRepository.findById(estudianteId)
                 .orElseThrow(() -> new RuntimeException("Estudiante not found"));
         // Aquí iría la lógica para calcular el promedio
         return estudiante.getPromedioPonderado();
-    }
+    }*/
 
     //meteer en el controller
     /*public int calcularSemestre(Long estudianteId) {

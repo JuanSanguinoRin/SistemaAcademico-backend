@@ -85,7 +85,7 @@ public class EstudianteCursoController {
         }
     }
 
-    @PostMapping("/{id}/cancelar")
+    @PutMapping("/{id}/cancelar")
     public ResponseEntity<Void> cancelar(@PathVariable Long id) {
         try {
             estudianteCursoService.cancelar(id);

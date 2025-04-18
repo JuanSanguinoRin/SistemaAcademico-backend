@@ -3,6 +3,7 @@ import java.util.Date;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED) // o JOINED o TABLE_PER_CLASS
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
