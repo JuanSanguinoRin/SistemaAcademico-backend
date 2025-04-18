@@ -2,7 +2,7 @@ package co.edu.ufps.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import co.edu.ufps.backend.model.Foro;
 import java.util.Date;
 
 @Entity

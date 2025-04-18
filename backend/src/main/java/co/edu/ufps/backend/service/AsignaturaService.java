@@ -63,7 +63,7 @@ public class AsignaturaService {
                 .orElseThrow(() -> new RuntimeException("Prerrequisito no encontrado"));
 
         AsignaturaPrerrequisito nuevaRelacion = new AsignaturaPrerrequisito();
-        nuevaRelacion.setCodigo(System.currentTimeMillis()); // O usa un ID autogenerado
+        nuevaRelacion.setId(System.currentTimeMillis()); // O usa un ID autogenerado
         nuevaRelacion.setAsignatura(asignatura);
         nuevaRelacion.setPrerrequisito(prerrequisito);
 

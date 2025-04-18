@@ -70,7 +70,7 @@ public class EstudianteController {
         }
     }
 
-    @GetMapping("/{id}/calcular-ponderado")
+    /*@GetMapping("/{id}/calcular-ponderado")
     public ResponseEntity<Float> calcularPonderado(@PathVariable Long id) {
         try {
             Float promedio = estudianteService.calcularPonderado(id);
@@ -78,9 +78,9 @@ public class EstudianteController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
-    @GetMapping("/{id}/calcular-semestre")
+    /*@GetMapping("/{id}/calcular-semestre")
     public ResponseEntity<Integer> calcularSemestre(@PathVariable Long id) {
         try {
             Integer semestre = estudianteService.calcularSemestre(id);
@@ -88,15 +88,7 @@ public class EstudianteController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
-    @PostMapping("/{id}/actualizar-historial")
-    public ResponseEntity<Void> actualizarHistorialAcademico(@PathVariable Long id, @RequestBody Semestre semestre) {
-        try {
-            estudianteService.actualizarHistorialAcademico(id, semestre);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 }

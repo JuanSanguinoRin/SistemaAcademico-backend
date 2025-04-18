@@ -40,4 +40,13 @@ public class NotificacionService {
     public void deleteNotificacion(Long id) {
         notificacionRepository.deleteById(id);
     }
+
+    // Métodos específicos
+    public void enviarNotificacion() {
+        // Implementación del método
+    }
+
+    public void marcarComoAbierto() {
+        // Implementación del método
+    }
 }

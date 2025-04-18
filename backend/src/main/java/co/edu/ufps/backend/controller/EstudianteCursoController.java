@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.controller;
 
+import co.edu.ufps.backend.model.Asistencia;
 import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.service.EstudianteCursoService;
 import lombok.RequiredArgsConstructor;
@@ -71,41 +72,20 @@ public class EstudianteCursoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/asistencia")
-    public ResponseEntity<Void> agregarAsistencia(@PathVariable Long id, @RequestBody Map<String, Object> asistencia) {
+
+
+
+    @GetMapping("/{id}/habilitacion")
+    public ResponseEntity<?> comprobarRehabilitacion(@PathVariable Long id) {
         try {
-            String fecha = (String) asistencia.get("fecha");
-            Boolean asistio = (Boolean) asistencia.get("asistio");
-            estudianteCursoService.agregarAsistencia(id, fecha, asistio);
-            return ResponseEntity.ok().build();
+            Boolean habilitado = estudianteCursoService.comprobarRehabilitacion(id);
+            return ResponseEntity.ok(Map.of("habilitacion", habilitado));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/{id}/definitiva")
-    public ResponseEntity<Float> calcularDefinitiva(@PathVariable Long id) {
-        try {
-            Float definitiva = estudianteCursoService.calcularDefinitiva(id);
-            return ResponseEntity.ok(definitiva);
-        }catch (RuntimeException e){
-
-            return ResponseEntity.badRequest().build();
-
-        }
-    }
-
-    @GetMapping("/{id}/rehabilitacion")
-    public ResponseEntity<Boolean> comprobarRehabilitacion(@PathVariable Long id) {
-        try {
-            Boolean puedeRehabilitar = estudianteCursoService.comprobarRehabilitacion(id);
-            return ResponseEntity.ok(puedeRehabilitar);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/{id}/cancelar")
+    @PutMapping("/{id}/cancelar")
     public ResponseEntity<Void> cancelar(@PathVariable Long id) {
         try {
             estudianteCursoService.cancelar(id);
@@ -115,15 +95,5 @@ public class EstudianteCursoController {
         }
     }
 
-    @PostMapping("/matricular")
-    public ResponseEntity<Void> matricularCurso(
-            @RequestParam Long estudianteId,
-            @RequestParam Long cursoId) {
-        try {
-            estudianteCursoService.matricularCurso(estudianteId, cursoId);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+
 }

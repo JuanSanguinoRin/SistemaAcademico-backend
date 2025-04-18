@@ -17,28 +17,10 @@ public class Calificacion {
     private Long id;
     private String nombre;
     private Date fecha;
-    private String tipo;
+    private String tipo; //P1, P2, P3, EX, H
     private Float nota;
     @OneToOne
     @JoinColumn(name = "estudiante")
     private EstudianteCurso estudianteCurso;
-    
-    // Methods from UML
-    public void modificarEvaluacion() {
-        // Implementation
-    }
-    
-    public void eliminarEvaluacion() {
-        // Implementation
-    }
-    
-    public String obtenerDetalles() {
-        // Implementation
-        return "";
-    }
-    
-    public void calificar() {
-        // Implementation
-    }
 
 }

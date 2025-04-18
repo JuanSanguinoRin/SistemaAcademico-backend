@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/personas")
+@RequestMapping("/personas")
 @RequiredArgsConstructor
-public class personaController {
+public class PersonaController {
 
     private final PersonaService personaService;
 
@@ -24,10 +24,10 @@ public class personaController {
         return ResponseEntity.ok(personaService.getAllPersonas());
     }
 
-    // Obtener una persona por cédula
-    @GetMapping("/{cedula}")
-    public ResponseEntity<Persona> getPersonaByCedula(@PathVariable Long cedula) {
-        Optional<Persona> persona = personaService.getPersonaByCedula(cedula);
+    // Obtener una persona por id
+    @GetMapping("/{id}")
+    public ResponseEntity<Persona> getPersonaByCedula(@PathVariable Long id) {
+        Optional<Persona> persona = personaService.getPersonaByCedula(id);
         return persona.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -44,10 +44,10 @@ public class personaController {
     }
 
     // Modificar datos de una persona
-    @PutMapping("/{cedula}")
-    public ResponseEntity<Persona> modificarDatos(@PathVariable Long cedula, @RequestBody Persona personaDetalles) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Persona> modificarDatos(@PathVariable Long id, @RequestBody Persona personaDetalles) {
         try {
-            Persona personaActualizada = personaService.modificarDatos(cedula, personaDetalles);
+            Persona personaActualizada = personaService.modificarDatos(id, personaDetalles);
             return ResponseEntity.ok(personaActualizada);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -55,17 +55,17 @@ public class personaController {
     }
 
     // Eliminar datos de una persona (eliminación lógica)
-    @DeleteMapping("/{cedula}")
-    public ResponseEntity<Void> eliminarDatos(@PathVariable Long cedula) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarDatos(@PathVariable Long id) {
         try {
-            personaService.eliminarDatos(cedula);
+            personaService.eliminarDatos(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
-
-    @PostMapping("/{cedula}/reservas")
+    // eesto todavia no
+    @PostMapping("/{id}/reservas")
     public ResponseEntity<?> crearReservaParaPersona(
             @PathVariable Long cedula,
             @RequestParam Long recursoId,

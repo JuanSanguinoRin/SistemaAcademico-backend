@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Material {
+public class Material extends Recurso{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

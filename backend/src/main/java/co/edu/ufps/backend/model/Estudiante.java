@@ -12,19 +12,16 @@ import java.util.List;
 public class Estudiante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Long codigoEstudiante;
 
     @ManyToOne
     @JoinColumn(name = "programa_id")
     private Programa programa;
 
-    private Integer creditosAprobados;
-    private Float promedioPonderado;
-
     @OneToOne
     @JoinColumn(name = "persona_id")
     private Persona persona;
 
-    @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL)
-    private List<EstudianteCurso> cursos;
 }

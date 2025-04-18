@@ -1,7 +1,9 @@
 package co.edu.ufps.backend.controller;
 
+import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.Curso;
 import co.edu.ufps.backend.model.Estudiante;
+import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.service.CursoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -68,31 +70,6 @@ public class CursoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/modificar")
-    public ResponseEntity<Curso> modificarCurso(@PathVariable Long id, @RequestBody Curso cursoDetails) {
-        try {
-            Curso updatedCurso = cursoService.modificarCurso(id, cursoDetails);
-            return ResponseEntity.ok(updatedCurso);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/{id}/inscribir")
-    public ResponseEntity<Void> inscribirEstudiante(@PathVariable Long id, @RequestBody Estudiante estudiante) {
-        try {
-            cursoService.inscribirEstudiante(id, estudiante);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @DeleteMapping("/{cursoId}/cancelar/{estudianteId}")
-    public ResponseEntity<Void> cancelarInscripcion(@PathVariable Long cursoId, @PathVariable Long estudianteId) {
-        cursoService.cancelarInscripcion(cursoId, estudianteId);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/{id}/detalles")
     public ResponseEntity<Curso> obtenerDetalles(@PathVariable Long id) {
@@ -104,43 +81,7 @@ public class CursoController {
         }
     }
 
-    @PostMapping("/{id}/evaluacion")
-    public ResponseEntity<Void> crearEvaluacion(@PathVariable Long id, @RequestBody String evaluacionData) {
-        try {
-            cursoService.crearEvaluacion(id, evaluacionData);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 
-    @PostMapping("/{id}/tarea")
-    public ResponseEntity<Void> crearTarea(@PathVariable Long id, @RequestBody String tareaData) {
-        try {
-            cursoService.crearTarea(id, tareaData);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 
-    @PutMapping("/{cursoId}/calificacion/{estudianteId}")
-    public ResponseEntity<Void> modificarCalificacion(@PathVariable Long cursoId, @PathVariable Long estudianteId, @RequestBody Float calificacion) {
-        try {
-            cursoService.modificarCalificacion(cursoId, estudianteId, calificacion);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
-    @PostMapping("/{id}/asistencia")
-    public ResponseEntity<Void> generarAsistencia(@PathVariable Long id, @RequestBody String fecha) {
-        try {
-            cursoService.generarAsistencia(id, fecha);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }

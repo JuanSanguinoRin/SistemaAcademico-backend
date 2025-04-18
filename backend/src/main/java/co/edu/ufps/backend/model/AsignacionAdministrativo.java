@@ -20,15 +20,6 @@ public class AsignacionAdministrativo {
 
     private Integer anio; // Año de la asignación
 
-    
-    // Métodos específicos
-    public void asignaEmpleado() {
-        // Implementación del método
-    }
-    
-    public boolean verificarDisponibilidad() {
-        // Implementación del método
-        return false;
-    }
+
 
 }
