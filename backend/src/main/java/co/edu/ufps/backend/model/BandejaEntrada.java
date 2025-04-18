@@ -21,15 +21,6 @@ public class BandejaEntrada {
     private Persona persona;
     private Integer capacidad;
     
-    // Métodos específicos
-    public List<Mensaje> obtenerMensajesNoLeidos() {
-        // Implementación del método
-        return null;
-    }
-    
-    public List<Mensaje> buscarMensajes(String criterio) {
-        // Implementación del método
-        return null;
-    }
+
 
 }
