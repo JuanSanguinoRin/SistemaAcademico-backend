@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class EstudianteCursoService {
     private final EstudianteCursoRepository estudianteCursoRepository;
     private final AsistenciaService asistenciaService;
-    private final CalificacionService calificacionService;
     private final EstudianteService estudianteService;
     private final CursoService cursoService;
     private final AsignaturaPrerrequisitoService asignaturaPrerrequisitoService;
@@ -79,7 +78,7 @@ public class EstudianteCursoService {
                 .findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId)
                 .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
     }
-
+/*
     public Float calcularDefinitiva(Long estudianteCursoId) {
 
         Optional<EstudianteCurso> estudianteCurso = this.getEstudianteCursoById(estudianteCursoId);
@@ -119,7 +118,7 @@ public class EstudianteCursoService {
         }
 
         return suma;
-    }
+    }*/
 
     public Boolean comprobarRehabilitacion(Long estudianteCursoId) {
         EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)
