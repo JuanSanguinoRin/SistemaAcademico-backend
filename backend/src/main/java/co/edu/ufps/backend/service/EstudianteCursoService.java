@@ -78,47 +78,7 @@ public class EstudianteCursoService {
                 .findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId)
                 .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
     }
-/*
-    public Float calcularDefinitiva(Long estudianteCursoId) {
 
-        Optional<EstudianteCurso> estudianteCurso = this.getEstudianteCursoById(estudianteCursoId);
-
-        if (estudianteCurso.isEmpty())
-        {
-
-            throw new RuntimeException("Estudiante-Curso no encontrado.");
-
-        }
-
-        EstudianteCurso aux = estudianteCurso.get();
-        List<Calificacion> calificaciones = calificacionService.getCalificacionesByEstudianteCurso(aux);
-
-        if (calificaciones.isEmpty()) {
-            throw new RuntimeException("No hay calificaciones para este estudiante en este curso.");
-        }
-
-        float suma = 0f;
-        for (Calificacion c : calificaciones) {
-
-            if(c.getTipo().equals("H")){
-
-                return c.getNota();
-
-            }else if(c.getTipo().equals("EX"))
-            {
-
-                suma += c.getNota() * 0.30f;
-
-            }else{
-
-                suma += c.getNota() * 0.2333f;
-
-            }
-
-        }
-
-        return suma;
-    }*/
 
     public Boolean comprobarRehabilitacion(Long estudianteCursoId) {
         EstudianteCurso ec = estudianteCursoRepository.findById(estudianteCursoId)

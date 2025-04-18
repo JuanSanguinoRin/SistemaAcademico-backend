@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -126,6 +124,13 @@ public class CalificacionService {
     public List<Calificacion> getCalificacionesByEstudianteCurso(Long estudianteCursoId) {
         return calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
     }
+
+
+    /*calcule la definitica de las notas en un estudainte curso trayendo sus calificaciones , las calificaciones pueden ser P1 	P2	P3	EX	HA	OP
+las directrices son estas P1 	P2	P3 valen valen 23,33% y el  EX 30,01%, si llega haber una nota en HA esa sera la definitiva,*/
+
+//no tiene muhco sentido que este aca o si ?
+
 
 
 
