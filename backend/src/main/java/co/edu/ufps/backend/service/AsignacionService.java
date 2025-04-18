@@ -114,6 +114,7 @@ public class AsignacionService {
 
     //ESTO NO ESTA EN EL CONTROLLER
     //falta que llame ese metodo desde calificacion
+    //esto como que no xd
     public Calificacion registrarCalificacion(
             Long docenteId,
             Long cursoId,

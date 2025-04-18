@@ -78,7 +78,7 @@ public class HistorialAcademicoService {
 
     }
 
-    public Double calcularPromedioPonderado(Long estudianteId) {
+    /*public Double calcularPromedioPonderado(Long estudianteId) {
         // Obtener cursos aprobados
         List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
 
@@ -98,7 +98,7 @@ public class HistorialAcademicoService {
         }
 
         return totalCreditos > 0 ? sumaPonderada / totalCreditos : 0.0;
-    }
+    }*/
 
     public List<EstudianteCurso> getAllEstudianteCursoByEstudiante(Long estudianteId)
     {
