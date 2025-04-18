@@ -1,11 +1,13 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.Mensaje;
 import co.edu.ufps.backend.model.Notificacion;
 import co.edu.ufps.backend.repository.NotificacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,12 +43,40 @@ public class NotificacionService {
         notificacionRepository.deleteById(id);
     }
 
-    // Métodos específicos
-    public void enviarNotificacion() {
-        // Implementación del método
+
+
+    // Métodos específicos -----------------------------------------------------------------------------------------------
+    public Notificacion enviarNotificacion(Mensaje mensaje) {
+        if (mensaje == null || mensaje.getDestinatario() == null) {
+            throw new RuntimeException("Mensaje o destinatario no válido para notificación");
+        }
+
+        Notificacion notificacion = new Notificacion();
+        String contenido = mensaje.getContenido();
+        String preView = contenido.length() > 30 ? contenido.substring(0, 30) + "..." : contenido;
+
+        notificacion.setPreView(preView);
+        notificacion.setFechaEnvio(new Date());
+        notificacion.setMensaje(mensaje);
+        notificacion.setDestinatario(mensaje.getDestinatario());
+
+        return notificacionRepository.save(notificacion);
     }
 
-    public void marcarComoAbierto() {
-        // Implementación del método
+
+    public boolean marcarComoAbierto(Long notificacionId) {
+        Optional<Notificacion> optionalNotificacion = notificacionRepository.findById(notificacionId);
+        if (optionalNotificacion.isPresent()) {
+            Notificacion notificacion = optionalNotificacion.get();
+            if (notificacion.getAbierta() == null || !notificacion.getAbierta()) {
+                notificacion.setAbierta(Boolean.TRUE); // Marcamos como abierta
+                notificacionRepository.save(notificacion);
+                return true; // Se marcó como abierta
+            }
+            return false; // Ya estaba abierta
+        } else {
+            throw new RuntimeException("Notificación no encontrada");
+        }
     }
+
 }

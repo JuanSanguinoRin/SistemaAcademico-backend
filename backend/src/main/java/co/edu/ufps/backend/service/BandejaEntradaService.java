@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.BandejaEntrada;
+import co.edu.ufps.backend.model.Mensaje;
 import co.edu.ufps.backend.repository.BandejaEntradaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.Optional;
 public class BandejaEntradaService {
     @Autowired
     private final BandejaEntradaRepository bandejaEntradaRepository;
+
+    private final MensajeService mensajeService;
 
     public List<BandejaEntrada> getAllBandejasEntrada() {
         return bandejaEntradaRepository.findAll();
@@ -39,4 +42,15 @@ public class BandejaEntradaService {
     public void deleteBandejaEntrada(Long id) {
         bandejaEntradaRepository.deleteById(id);
     }
+
+
+
+    // Métodos específicos -----------------------------------------------------------------------------------------------
+    public List<Mensaje> obtenerMensajesNoLeidos(Long personaId) {
+        // Llamamos al servicio de Mensaje para obtener los mensajes no leídos
+        return mensajeService.obtenerMensajesNoLeidosPorDestinatario(personaId);
+    }
+
+
+
 }
