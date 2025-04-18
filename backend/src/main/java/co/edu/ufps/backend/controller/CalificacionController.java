@@ -54,7 +54,7 @@ public class CalificacionController {
             @RequestBody Calificacion calificacionDetails
     ) {
         try {
-            Calificacion updated = calificacionService.updateCalificacion(id, calificacionDetails);
+            Calificacion updated = calificacionService.modificarCalificacion(id, calificacionDetails);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -62,7 +62,10 @@ public class CalificacionController {
     }
 
 
-
+    @GetMapping("/estudiante-curso/{id}")
+    public List<Calificacion> getCalificacionesPorEstudianteCurso(@PathVariable Long id) {
+        return calificacionService.getCalificacionesByEstudianteCurso(id);
+    }
 
 
 }
