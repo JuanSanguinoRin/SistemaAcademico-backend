@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +36,7 @@ public class CalificacionService {
 
     public List<Calificacion> getCalificacionesByEstudianteCurso(EstudianteCurso curso)
     {
-
         return calificacionRepository.findByEstudianteCursoId(curso.getId());
-
     }
 
     public Calificacion updateCalificacion(Long id, Calificacion calificacionDetails) {
@@ -95,42 +91,49 @@ public class CalificacionService {
         return calificacionRepository.save(calificacion);
     }
 
-    //por pRobar
-    public Calificacion modificarCalificacion(
-            Long calificacionId,
-            String nombre,
-            String tipo,
-            Float nota,
-            Date fecha
-    ) {
-        Calificacion calificacion = this.getById(calificacionId);
+    public Calificacion modificarCalificacion(Long calificacionId, Calificacion calificacionActualizada) {
+        // Buscar la calificación existente por su ID
+        Calificacion calificacionExistente = this.getById(calificacionId);
 
-        // Opcional: validar si el nuevo tipo ya existe en otra calificación
-        if (!calificacion.getTipo().equalsIgnoreCase(tipo)) {
+        // Validar si el tipo de calificación ha cambiado
+        if (!calificacionExistente.getTipo().equalsIgnoreCase(calificacionActualizada.getTipo())) {
             boolean tipoYaExiste = this.tipoYaExisteParaEstudianteCurso(
-                    calificacion.getEstudianteCurso().getId(), tipo
+                    calificacionExistente.getEstudianteCurso().getId(), calificacionActualizada.getTipo()
             );
             if (tipoYaExiste) {
-                throw new RuntimeException("Ya existe una calificación de tipo '" + tipo + "' para este estudiante.");
+                throw new RuntimeException("Ya existe una calificación de tipo '" + calificacionActualizada.getTipo() + "' para este estudiante.");
             }
         }
 
-        calificacion.setNombre(nombre);
-        calificacion.setTipo(tipo);
-        calificacion.setNota(nota);
-        calificacion.setFecha(fecha);
+        // Validar que la nota esté entre 0.0 y 5.0
+        Float nota = calificacionActualizada.getNota();
+        if (nota < 0.0 || nota > 5.0) {
+            throw new RuntimeException("La nota debe estar entre 0.0 y 5.0.");
+        }
 
-        return calificacionRepository.save(calificacion);
+        // Actualizar los campos de la calificación existente con los valores del objeto calificacionActualizada
+        calificacionExistente.setNombre(calificacionActualizada.getNombre());
+        calificacionExistente.setTipo(calificacionActualizada.getTipo());
+        calificacionExistente.setNota(calificacionActualizada.getNota());
+        calificacionExistente.setFecha(calificacionActualizada.getFecha());
+
+        // Guardar la calificación modificada
+        return calificacionRepository.save(calificacionExistente);
+    }
+
+    public List<Calificacion> getCalificacionesByEstudianteCurso(Long estudianteCursoId) {
+        return calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
     }
 
 
-    public Calificacion guardarCalificacion(Calificacion calificacion) {
-        return calificacionRepository.save(calificacion);
-    }
+    /*calcule la definitica de las notas en un estudainte curso trayendo sus calificaciones , las calificaciones pueden ser P1 	P2	P3	EX	HA	OP
+las directrices son estas P1 	P2	P3 valen valen 23,33% y el  EX 30,01%, si llega haber una nota en HA esa sera la definitiva,*/
 
-    public Calificacion asignarCalificacion(Long estudianteId, Long cursoId, String nombre, String tipo, Float nota, Date fecha) {
+//no tiene muhco sentido que este aca o si ?
 
-        return null;
 
-    }
+
+
+
+
 }
