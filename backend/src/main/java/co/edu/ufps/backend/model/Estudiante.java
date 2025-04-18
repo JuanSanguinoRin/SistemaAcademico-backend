@@ -20,9 +20,6 @@ public class Estudiante {
     @JoinColumn(name = "programa_id")
     private Programa programa;
 
-    private Integer creditosAprobados;
-    private Float promedioPonderado;
-
     @OneToOne
     @JoinColumn(name = "persona_id")
     private Persona persona;

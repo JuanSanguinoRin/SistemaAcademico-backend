@@ -70,7 +70,7 @@ public class EstudianteController {
         }
     }
 
-    @GetMapping("/{id}/calcular-ponderado")
+    /*@GetMapping("/{id}/calcular-ponderado")
     public ResponseEntity<Float> calcularPonderado(@PathVariable Long id) {
         try {
             Float promedio = estudianteService.calcularPonderado(id);
@@ -78,7 +78,7 @@ public class EstudianteController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
     /*@GetMapping("/{id}/calcular-semestre")
     public ResponseEntity<Integer> calcularSemestre(@PathVariable Long id) {

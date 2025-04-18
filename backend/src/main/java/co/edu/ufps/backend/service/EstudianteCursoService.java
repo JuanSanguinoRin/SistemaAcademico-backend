@@ -216,34 +216,39 @@ public class EstudianteCursoService {
     }
 
     private void validarHorarios(Long estudianteId, Long cursoId) {
+        try{
 
-        Curso cursoAMatricular = cursoService.getCursoById(cursoId)
-                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+            Curso cursoAMatricular = cursoService.getCursoById(cursoId)
+                    .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
 
-        List<HorarioCurso> horariosNuevoCurso = horarioCursoService.getAllHorariosByCurso(cursoId);
+            List<HorarioCurso> horariosNuevoCurso = horarioCursoService.getAllHorariosByCurso(cursoId);
 
-        if (horariosNuevoCurso.isEmpty()) {
-            throw new RuntimeException("El curso no tiene horarios definidos.");
-        }
+            if (horariosNuevoCurso.isEmpty()) {
+                throw new RuntimeException("El curso no tiene horarios definidos.");
+            }
 
-        // Obtener cursos actuales del estudiante
-        List<EstudianteCurso> cursosActuales = estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(
-                estudianteId, "Cursando");
+            // Obtener cursos actuales del estudiante
+            List<EstudianteCurso> cursosActuales = estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(
+                    estudianteId, "Cursando");
 
-        // Para cada curso del estudiante, verificar si hay conflicto de horarios
-        for (EstudianteCurso ec : cursosActuales) {
-            List<HorarioCurso> horariosCursoActual = horarioCursoService.getAllHorariosByCurso(ec.getCurso().getId());
+            // Para cada curso del estudiante, verificar si hay conflicto de horarios
+            for (EstudianteCurso ec : cursosActuales) {
+                List<HorarioCurso> horariosCursoActual = horarioCursoService.getAllHorariosByCurso(ec.getCurso().getId());
 
-            for (HorarioCurso horarioActual : horariosCursoActual) {
-                for (HorarioCurso horarioNuevo : horariosNuevoCurso) {
-                    if (hayConflictoHorario(horarioActual, horarioNuevo)) {
-                        throw new RuntimeException(
-                                "Conflicto de horario con el curso " + ec.getCurso().getNombre() +
-                                        ". Día: " + horarioNuevo.getDia() +
-                                        ", Hora: " + horarioNuevo.getHoraInicio() + " - " + horarioNuevo.getHoraFin());
+                for (HorarioCurso horarioActual : horariosCursoActual) {
+                    for (HorarioCurso horarioNuevo : horariosNuevoCurso) {
+                        if (hayConflictoHorario(horarioActual, horarioNuevo)) {
+                            throw new RuntimeException(
+                                    "Conflicto de horario con el curso " + ec.getCurso().getNombre() +
+                                            ". Día: " + horarioNuevo.getDia() +
+                                            ", Hora: " + horarioNuevo.getHoraInicio() + " - " + horarioNuevo.getHoraFin());
+                        }
                     }
                 }
             }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al validar horarios: " + e.getMessage(), e);
         }
     }
 
