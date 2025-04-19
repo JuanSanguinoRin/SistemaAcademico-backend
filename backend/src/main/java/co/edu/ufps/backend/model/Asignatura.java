@@ -17,6 +17,7 @@ public class Asignatura {
     private Long codigo;
     private String nombre;
     private Integer semestre;
+    private Integer creditos;
     private Integer horas;
     private String tipoAsignatura;
     @ManyToOne

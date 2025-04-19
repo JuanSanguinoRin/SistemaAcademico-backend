@@ -71,7 +71,7 @@ public class HistorialAcademicoService {
         for (EstudianteCurso ec : cursosAprobados) {
             // Obtenemos la nota definitiva del curso
 
-            int creditos = ec.getCurso().getCreditos();
+            int creditos = ec.getCurso().getAsignatura().getCreditos();
             totalCreditos += creditos;
 
         }
@@ -94,7 +94,7 @@ public class HistorialAcademicoService {
         for (EstudianteCurso ec : cursosAprobados) {
             // Obtenemos la nota definitiva del curso
 
-            int creditos = ec.getCurso().getCreditos();
+            int creditos = ec.getCurso().getAsignatura().getCreditos();
             sumaPonderada += estudianteCursoService.calcularDefinitiva(ec.getId()) * creditos;
             totalCreditos += creditos;
         }
