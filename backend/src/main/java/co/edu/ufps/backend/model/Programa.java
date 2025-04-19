@@ -16,7 +16,7 @@ public class Programa {
 
     private String nombre;
     private Integer codigo;
-    private Integer creditos;
+    private Boolean acreditado;
     private String facultad;
 
 }
