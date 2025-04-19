@@ -18,14 +18,5 @@ public class PersonalAdministrativo extends Persona {
     private String cargo;
     private String departamento;
     
-    // Métodos según UML
-    public void generarReporte() {
-        // Implementación del método
-    }
-    
-    public void enviarNotificacion() {
-        // Implementación del método
-    }
-    
 
 }

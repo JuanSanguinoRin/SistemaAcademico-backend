@@ -26,9 +26,4 @@ public class Mensaje {
     private Date fechaEnvio;
     private Boolean leido;
 
-
-
-
-
-
 }

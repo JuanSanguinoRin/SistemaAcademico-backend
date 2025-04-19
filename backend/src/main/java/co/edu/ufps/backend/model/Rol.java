@@ -19,23 +19,4 @@ public class Rol {
     @ManyToOne
     @JoinColumn(name = "cedula")
     private Persona persona;
-
-    // Métodos específicos
-    public void agregarPrivilegio() {
-        // Implementación del método
-    }
-    
-    public void eliminarPrivilegio() {
-        // Implementación del método
-    }
-    
-    public void actualizarPrivilegio() {
-        // Implementación del método
-    }
-    
-    public boolean consultarPrivilegio() {
-        // Implementación del método
-        return false;
-    }
-
 }
