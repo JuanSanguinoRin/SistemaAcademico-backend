@@ -23,5 +23,7 @@ public class Estudiante {
     @OneToOne
     @JoinColumn(name = "persona_id")
     private Persona persona;
+    private String modalidad;
+    private String jornada;
 
 }

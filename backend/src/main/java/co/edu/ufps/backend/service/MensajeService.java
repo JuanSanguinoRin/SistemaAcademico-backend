@@ -17,6 +17,7 @@ import java.util.Optional;
 public class MensajeService {
     @Autowired
     private final MensajeRepository mensajeRepository;
+    private final NotificacionService notificacionService;
 
     public List<Mensaje> getAllMensajes() {
         return mensajeRepository.findAll();
@@ -27,7 +28,14 @@ public class MensajeService {
     }
 
     public Mensaje createMensaje(Mensaje mensaje) {
-        return mensajeRepository.save(mensaje);
+
+        // Primero se guarda el mensaje
+        Mensaje mensajeGuardado = mensajeRepository.save(mensaje);
+
+        // Luego se envía la notificación con el mensaje ya persistido
+        notificacionService.enviarNotificacion(mensajeGuardado);
+
+        return mensajeGuardado;
     }
 
     public Mensaje updateMensaje(Long id, Mensaje mensajeDetails) {

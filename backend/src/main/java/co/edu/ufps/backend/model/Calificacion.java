@@ -19,7 +19,7 @@ public class Calificacion {
     private Date fecha;
     private String tipo; //P1, P2, P3, EX, H
     private Float nota;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "estudiante")
     private EstudianteCurso estudianteCurso;
 

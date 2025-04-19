@@ -39,8 +39,8 @@ public class Curso {
     private Semestre semestre;
 
     private Character grupo;
+    private String jornada;
+    private String modalidad;
     private Boolean vacacional;
-    private Integer creditos;
-
 
 }

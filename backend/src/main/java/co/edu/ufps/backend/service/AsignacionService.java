@@ -108,28 +108,11 @@ public class AsignacionService {
         asignacion.setDocente(docente);
         asignacion.setCurso(curso);
 
-        return asignacionRepository.save(asignacion);
+        return createAsignacion(asignacion);
     }
 
 
-    //ESTO NO ESTA EN EL CONTROLLER
-    //falta que llame ese metodo desde calificacion
-    public Calificacion registrarCalificacion(
-            Long docenteId,
-            Long cursoId,
-            Long estudianteId,
-            String nombre,
-            String tipo,
-            Float nota,
-            Date fecha
-    ) {
-        // 1. Validar que este docente está asignado al curso
-        asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId)
-                .orElseThrow(() -> new RuntimeException("El docente no está asignado a este curso."));
 
-        // 2. Delegar la lógica a CalificacionService
-        return calificacionService.asignarCalificacion(estudianteId, cursoId, nombre, tipo, nota, fecha);
-    }
 
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);

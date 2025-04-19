@@ -60,4 +60,11 @@ public class NotificacionController {
         return notificacionService.marcarComoAbierto(id);
     }
 
+//este es el malp que hay que usar en el fronetn
+    @GetMapping("/persona/{personaId}")
+    public List<Notificacion> getNotificacionesPorPersona(@PathVariable Long personaId) {
+        return notificacionService.getNotificacionesPorPersona(personaId);
+    }
+
+
 }

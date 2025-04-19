@@ -7,17 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class CalificacionService {
     @Autowired
     private final CalificacionRepository calificacionRepository;
-    //private final EstudianteCursoService estudianteCursoService;
-    //private final CalificacionService calificacionService;
+    private final EstudianteCursoService estudianteCursoService;
+
 
     public List<Calificacion> getAllCalificaciones() {
         return calificacionRepository.findAll();
@@ -38,9 +36,7 @@ public class CalificacionService {
 
     public List<Calificacion> getCalificacionesByEstudianteCurso(EstudianteCurso curso)
     {
-
         return calificacionRepository.findByEstudianteCursoId(curso.getId());
-
     }
 
     public Calificacion updateCalificacion(Long id, Calificacion calificacionDetails) {
@@ -65,47 +61,79 @@ public class CalificacionService {
     }
 
 
-    /*public Calificacion asignarCalificacion(
-            Long estudianteId,
-            Long cursoId,
-            String nombre,
-            String tipo,
-            Float nota,
-            Date fecha
-    ) {
-        // 1. Obtener la inscripción del estudiante al curso
-        //EstudianteCurso ec = estudianteCursoService.getInscripcion(cursoId, estudianteId);
 
-        // 2. Validar estado "Cursando"
+    public Calificacion registrarCalificacion(Calificacion calificacion) {
+        // 1. Verificar que venga con estudianteCurso
+        if (calificacion.getEstudianteCurso() == null || calificacion.getEstudianteCurso().getId() == null) {
+            throw new RuntimeException("Debe especificar el estudianteCurso con su ID.");
+        }
+
+        Long estudianteCursoId = calificacion.getEstudianteCurso().getId();
+
+        // 2. Buscar EstudianteCurso desde la base de datos
+        EstudianteCurso ec = estudianteCursoService.getById(estudianteCursoId);
+
+        // 3. Validar estado "Cursando"
         if (!"Cursando".equalsIgnoreCase(ec.getEstado())) {
-            throw new RuntimeException("El estudiante no está en estado 'Cursando' para este curso.");
+            throw new RuntimeException("El estudiante no está en estado 'Cursando'.");
         }
 
-        // 3. Validar que no exista ya una calificación con ese tipo
-        boolean tipoYaExiste = calificacionService.tipoYaExisteParaEstudianteCurso(ec.getId(), tipo);
+        // 4. Verificar si ya existe una calificación de ese tipo
+        boolean tipoYaExiste = this.tipoYaExisteParaEstudianteCurso(estudianteCursoId, calificacion.getTipo());
         if (tipoYaExiste) {
-            throw new RuntimeException("Ya existe una calificación de tipo '" + tipo + "' para este estudiante.");
+            throw new RuntimeException("Ya existe una calificación de tipo '" + calificacion.getTipo() + "' para este estudiante.");
         }
 
-        // 4. Crear calificación desde cero
-        Calificacion calificacion = new Calificacion();
-        calificacion.setNombre(nombre);
-        calificacion.setTipo(tipo);
-        calificacion.setNota(nota);
-        calificacion.setFecha(fecha);
+        // 5. Asociar el EstudianteCurso real (opcional si ya viene completo)
         calificacion.setEstudianteCurso(ec);
 
-        // 5. Guardar
-        return calificacionService.guardarCalificacion(calificacion);
-    }*/
-
-    public Calificacion guardarCalificacion(Calificacion calificacion) {
+        // 6. Guardar
         return calificacionRepository.save(calificacion);
     }
 
-    public Calificacion asignarCalificacion(Long estudianteId, Long cursoId, String nombre, String tipo, Float nota, Date fecha) {
+    public Calificacion modificarCalificacion(Long calificacionId, Calificacion calificacionActualizada) {
+        // Buscar la calificación existente por su ID
+        Calificacion calificacionExistente = this.getById(calificacionId);
 
-        return null;
+        // Validar si el tipo de calificación ha cambiado
+        if (!calificacionExistente.getTipo().equalsIgnoreCase(calificacionActualizada.getTipo())) {
+            boolean tipoYaExiste = this.tipoYaExisteParaEstudianteCurso(
+                    calificacionExistente.getEstudianteCurso().getId(), calificacionActualizada.getTipo()
+            );
+            if (tipoYaExiste) {
+                throw new RuntimeException("Ya existe una calificación de tipo '" + calificacionActualizada.getTipo() + "' para este estudiante.");
+            }
+        }
 
+        // Validar que la nota esté entre 0.0 y 5.0
+        Float nota = calificacionActualizada.getNota();
+        if (nota < 0.0 || nota > 5.0) {
+            throw new RuntimeException("La nota debe estar entre 0.0 y 5.0.");
+        }
+
+        // Actualizar los campos de la calificación existente con los valores del objeto calificacionActualizada
+        calificacionExistente.setNombre(calificacionActualizada.getNombre());
+        calificacionExistente.setTipo(calificacionActualizada.getTipo());
+        calificacionExistente.setNota(calificacionActualizada.getNota());
+        calificacionExistente.setFecha(calificacionActualizada.getFecha());
+
+        // Guardar la calificación modificada
+        return calificacionRepository.save(calificacionExistente);
     }
+
+    public List<Calificacion> getCalificacionesByEstudianteCurso(Long estudianteCursoId) {
+        return calificacionRepository.findByEstudianteCursoId(estudianteCursoId);
+    }
+
+
+    /*calcule la definitica de las notas en un estudainte curso trayendo sus calificaciones , las calificaciones pueden ser P1 	P2	P3	EX	HA	OP
+las directrices son estas P1 	P2	P3 valen valen 23,33% y el  EX 30,01%, si llega haber una nota en HA esa sera la definitiva,*/
+
+//no tiene muhco sentido que este aca o si ?
+
+
+
+
+
+
 }
