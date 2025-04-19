@@ -20,17 +20,15 @@ public class Notificacion {
     @OneToOne
     @JoinColumn(name = "mensaje")
     private Mensaje mensaje;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "destinatario")
     private Persona destinatario;
 
-    // Métodos específicos
-    public void enviarNotificacion() {
-        // Implementación del método
-    }
-    
-    public void marcarComoAbierto() {
-        // Implementación del método
-    }
+    private Boolean abierta;
+
+
+    private Boolean abierta;
+
+
 
 }

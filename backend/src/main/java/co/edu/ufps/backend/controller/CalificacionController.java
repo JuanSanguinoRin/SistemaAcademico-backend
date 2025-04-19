@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.controller;
 
 import co.edu.ufps.backend.model.Calificacion;
+import co.edu.ufps.backend.model.Curso;
 import co.edu.ufps.backend.service.CalificacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,24 +35,9 @@ public class CalificacionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Crear calificación desde datos en bruto
-    @PostMapping("/asignar")
-    public ResponseEntity<?> asignarCalificacion(
-            @RequestParam Long estudianteId,
-            @RequestParam Long cursoId,
-            @RequestParam String nombre,
-            @RequestParam String tipo,
-            @RequestParam Float nota,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha
-    ) {
-        try {
-            Calificacion calificacion = calificacionService.asignarCalificacion(
-                    estudianteId, cursoId, nombre, tipo, nota, fecha
-            );
-            return ResponseEntity.ok(calificacion);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+    @PostMapping
+    public Calificacion createCalificacion(@RequestBody Calificacion calificacion) {
+        return calificacionService.registrarCalificacion(calificacion);
     }
 
     // Eliminar calificación
@@ -68,10 +54,20 @@ public class CalificacionController {
             @RequestBody Calificacion calificacionDetails
     ) {
         try {
-            Calificacion updated = calificacionService.updateCalificacion(id, calificacionDetails);
+            Calificacion updated = calificacionService.modificarCalificacion(id, calificacionDetails);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+    @GetMapping("/estudiante-curso/{id}")
+    public List<Calificacion> getCalificacionesPorEstudianteCurso(@PathVariable Long id) {
+        return calificacionService.getCalificacionesByEstudianteCurso(id);
+    }
+
+
+
+
 }

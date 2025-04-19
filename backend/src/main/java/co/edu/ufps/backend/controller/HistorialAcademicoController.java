@@ -77,4 +77,13 @@ public class HistorialAcademicoController {
         return ResponseEntity.ok(calificaciones);
     }
 
+
+
+
+    @GetMapping("/definitiva/{estudianteCursoId}")
+    public ResponseEntity<Float> calcularDefinitiva(@PathVariable Long estudianteCursoId) {
+        Float definitiva = historialAcademicoService.calcularDefinitivaPorEstudianteCurso(estudianteCursoId);
+        return ResponseEntity.ok(definitiva);
+    }
+
 }

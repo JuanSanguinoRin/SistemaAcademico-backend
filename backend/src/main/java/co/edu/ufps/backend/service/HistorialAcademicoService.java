@@ -8,7 +8,9 @@ import co.edu.ufps.backend.repository.HistorialAcademicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -77,7 +79,7 @@ public class HistorialAcademicoService {
         return totalCreditos;
 
     }
-
+/*
     public Double calcularPromedioPonderado(Long estudianteId) {
         // Obtener cursos aprobados
         List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
@@ -98,7 +100,7 @@ public class HistorialAcademicoService {
         }
 
         return totalCreditos > 0 ? sumaPonderada / totalCreditos : 0.0;
-    }
+    }*/
 
     public List<EstudianteCurso> getAllEstudianteCursoByEstudiante(Long estudianteId)
     {
@@ -112,6 +114,43 @@ public class HistorialAcademicoService {
 
         return calificacionService.getCalificacionesByEstudianteCurso(estudianteCursoService.getById(estudianteCursoId));
 
+    }
+
+    public Float calcularDefinitivaPorEstudianteCurso(Long estudianteCursoId) {
+        // Obtener todas las calificaciones asociadas al estudianteCurso
+        List<Calificacion> calificaciones = calificacionService.getCalificacionesByEstudianteCurso(estudianteCursoId);
+
+        if (calificaciones.isEmpty()) {
+            throw new RuntimeException("El estudiante no tiene calificaciones registradas.");
+        }
+
+        // Revisar si existe una nota de tipo HA (Habilitación)
+        Optional<Calificacion> ha = calificaciones.stream()
+                .filter(c -> "HA".equalsIgnoreCase(c.getTipo()))
+                .findFirst();
+
+        if (ha.isPresent()) {
+            return ha.get().getNota(); // Se usa la habilitación directamente
+        }
+
+        // Buscar calificaciones necesarias para el cálculo tradicional
+        Map<String, Float> notas = new HashMap<>();
+        for (Calificacion c : calificaciones) {
+            notas.put(c.getTipo().toUpperCase(), c.getNota());
+        }
+
+        // Validar que existan P1, P2, P3 y EX para el cálculo
+        if (!notas.containsKey("P1") || !notas.containsKey("P2") || !notas.containsKey("P3") || !notas.containsKey("EX")) {
+            throw new RuntimeException("Faltan calificaciones requeridas (P1, P2, P3 o EX).");
+        }
+
+        // Cálculo ponderado
+        float definitiva = (notas.get("P1") * 0.2333f) +
+                (notas.get("P2") * 0.2333f) +
+                (notas.get("P3") * 0.2333f) +
+                (notas.get("EX") * 0.3001f);
+
+        return Math.round(definitiva * 100.0f) / 100.0f; // Redondear a 2 decimales
     }
 
 }
