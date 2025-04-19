@@ -25,5 +25,4 @@ public class Notificacion {
     private Persona destinatario;
 
     private Boolean abierta;
-
 }

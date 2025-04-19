@@ -25,6 +25,4 @@ public class Asignatura {
 
     private Pensum pensum;
 
-
-
 }
