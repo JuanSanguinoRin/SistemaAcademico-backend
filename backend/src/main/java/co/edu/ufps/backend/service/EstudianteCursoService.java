@@ -144,7 +144,7 @@ public class EstudianteCursoService {
                 .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
 
         // Validar si ya está matriculado
-        Optional<EstudianteCurso> yaMatriculado = estudianteCursoRepository.findByCursoIdAndEstudianteCodigoEstudiante(cursoId, estudianteId);
+        Optional<EstudianteCurso> yaMatriculado = estudianteCursoRepository.findByCursoIdAndEstudianteId(cursoId, estudianteId);
         if (yaMatriculado.isPresent()) {
             throw new RuntimeException("El estudiante ya está matriculado en este curso.");
         }
@@ -180,29 +180,56 @@ public class EstudianteCursoService {
     }
 
     private void validarPrerrequisitos(Long estudianteId, Asignatura asignatura) {
+        System.out.println("Validando prerrequisitos para la asignatura: " + asignatura.getNombre() + " (ID: " + asignatura.getId() + ")");
+
         // Obtener prerrequisitos de la asignatura
         List<AsignaturaPrerrequisito> prerrequisitosAsignatura = asignaturaPrerrequisitoService.getAllPrerrequisitosByAsignaturaId(asignatura.getId());
 
+        System.out.println("Prerrequisitos encontrados: " + prerrequisitosAsignatura.size());
+        prerrequisitosAsignatura.forEach(p ->
+                System.out.println("- " + p.getPrerrequisito().getNombre() + " (ID: " + p.getPrerrequisito().getId() + ")"));
+
         if (prerrequisitosAsignatura.isEmpty()) {
+            System.out.println("No hay prerrequisitos para esta asignatura");
             return;
         }
 
         // Obtener cursos aprobados del estudiante
         List<EstudianteCurso> cursosAprobados = this.getCursosAprobadosByEstudiante(estudianteId);
 
+        System.out.println("Cursos aprobados por el estudiante: " + cursosAprobados.size());
+        cursosAprobados.forEach(ca -> {
+            if (ca.getCurso() != null && ca.getCurso().getAsignatura() != null) {
+                System.out.println("- Curso: " + ca.getCurso().getNombre() +
+                        ", Asignatura: " + ca.getCurso().getAsignatura().getNombre() +
+                        " (ID: " + ca.getCurso().getAsignatura().getId() + ")");
+            } else {
+                System.out.println("- Curso sin asignatura asociada: " + ca.getId());
+            }
+        });
+
         // Crear una lista de IDs de asignaturas aprobadas para facilitar la verificación
-        List<Long> asignaturasAprobadasIds = cursosAprobados.stream()
-                .map(ec -> ec.getCurso().getAsignatura().getId())
-                .collect(Collectors.toList());
+        List<Long> asignaturasAprobadasIds = new ArrayList<>();
+        for (EstudianteCurso ec : cursosAprobados) {
+            if (ec.getCurso() != null && ec.getCurso().getAsignatura() != null) {
+                asignaturasAprobadasIds.add(ec.getCurso().getAsignatura().getId());
+            }
+        }
+
+        System.out.println("IDs de asignaturas aprobadas: " + asignaturasAprobadasIds);
 
         // Verificar que todos los prerrequisitos estén aprobados
         List<Asignatura> prerrequisitosNoAprobados = new ArrayList<>();
 
         for (AsignaturaPrerrequisito prerreq : prerrequisitosAsignatura) {
             Long idPrerrequisito = prerreq.getPrerrequisito().getId();
+            System.out.println("Verificando prerrequisito ID: " + idPrerrequisito);
 
             if (!asignaturasAprobadasIds.contains(idPrerrequisito)) {
+                System.out.println("¡NO APROBADO!");
                 prerrequisitosNoAprobados.add(prerreq.getPrerrequisito());
+            } else {
+                System.out.println("APROBADO");
             }
         }
 
@@ -211,8 +238,11 @@ public class EstudianteCursoService {
             prerrequisitosNoAprobados.forEach(a -> mensaje.append(a.getNombre()).append(", "));
             mensaje.delete(mensaje.length() - 2, mensaje.length());
 
+            System.out.println("Error de prerrequisitos: " + mensaje);
             throw new RuntimeException(mensaje.toString());
         }
+
+        System.out.println("Todos los prerrequisitos verificados correctamente");
     }
 
     private void validarHorarios(Long estudianteId, Long cursoId) {
@@ -228,8 +258,9 @@ public class EstudianteCursoService {
             }
 
             // Obtener cursos actuales del estudiante
-            List<EstudianteCurso> cursosActuales = estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(
-                    estudianteId, "Cursando");
+            List<EstudianteCurso> cursosActuales = this.getCursosActualesByEstudiante(estudianteId);
+
+            System.out.println("Cursos actuales: " + cursosActuales.size());
 
             // Para cada curso del estudiante, verificar si hay conflicto de horarios
             for (EstudianteCurso ec : cursosActuales) {
@@ -268,6 +299,23 @@ public class EstudianteCursoService {
 
     // Metodo para obtener cursos aprobados de un estudiante específico
     public List<EstudianteCurso> getCursosAprobadosByEstudiante(Long estudianteId) {
-        return estudianteCursoRepository.findByEstudianteCodigoEstudianteAndEstado(estudianteId, "Aprobado");
+        // Asegúrate de que la consulta es case-insensitive o coincide exactamente con cómo
+        // se almacena el estado "Aprobado" en la base de datos
+        List<EstudianteCurso> cursosAprobados = estudianteCursoRepository.findByEstudianteIdAndEstado(estudianteId, "Aprobado");
+
+        System.out.println("Buscando cursos aprobados del estudiante ID: " + estudianteId);
+        System.out.println("Encontrados: " + cursosAprobados.size());
+
+        return cursosAprobados;
     }
+
+    public List<EstudianteCurso> getCursosActualesByEstudiante(Long estudianteId)
+    {
+
+        List<EstudianteCurso> cursosActuales = estudianteCursoRepository.findByEstudianteIdAndEstado(estudianteId, "Cursando");
+
+        return cursosActuales;
+
+    }
+
 }

@@ -35,7 +35,7 @@ public class ProgramaService {
     public Programa updatePrograma(Integer codigo, Programa programaDetails) {
         return programaRepository.findById(codigo).map(programa -> {
             programa.setNombre(programaDetails.getNombre());
-            programa.setCreditos(programaDetails.getCreditos());
+            //programa.setCreditos(programaDetails.getCreditos());
             programa.setFacultad(programaDetails.getFacultad());
             return programaRepository.save(programa);
         }).orElseThrow(() -> new RuntimeException("Programa no encontrado"));
