@@ -62,10 +62,9 @@ public class FacturacionController {
 
     @PutMapping("/{numeroFactura}/descuento")
     public ResponseEntity<Facturacion> aplicarDescuento(@PathVariable String numeroFactura,
-                                                        @RequestParam String concepto,
                                                         @RequestParam double valor) {
         try {
-            Facturacion factura = facturacionService.aplicarDescuento(numeroFactura, concepto, valor);
+            Facturacion factura = facturacionService.aplicarDescuento(numeroFactura, valor);
             return ResponseEntity.ok(factura);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -88,26 +87,6 @@ public class FacturacionController {
                                                      @RequestParam String metodoPago) {
         try {
             Facturacion factura = facturacionService.registrarPago(numeroFactura, monto, metodoPago);
-            return ResponseEntity.ok(factura);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{numeroFactura}/enviar-electronica")
-    public ResponseEntity<Facturacion> enviarFacturaElectronica(@PathVariable String numeroFactura) {
-        try {
-            Facturacion factura = facturacionService.enviarFacturaElectronica(numeroFactura);
-            return ResponseEntity.ok(factura);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{numeroFactura}/generar-recibo")
-    public ResponseEntity<Facturacion> generarReciboDigital(@PathVariable String numeroFactura) {
-        try {
-            Facturacion factura = facturacionService.generarReciboDigital(numeroFactura);
             return ResponseEntity.ok(factura);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

@@ -3,6 +3,7 @@ package co.edu.ufps.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -17,11 +18,11 @@ public class HorarioAdministrativo {
     private String dia;
     private String departamento;
 
-    @Temporal(TemporalType.TIME)
-    private Date horaInicio;
+    @Column(name = "hora_inicio")
+    private LocalTime horaInicio;
 
-    @Temporal(TemporalType.TIME)
-    private Date horaFin;
+    @Column(name = "hora_fin")
+    private LocalTime horaFin;
 
     @ManyToOne
     @JoinColumn(name = "asignacionAdmin_id", nullable = false)

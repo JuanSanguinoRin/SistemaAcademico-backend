@@ -19,11 +19,6 @@ public class HorarioCurso {
     @Column(name = "dia")
     private String dia;
 
-    // El campo 'hora' es problemático, ya que parece estar causando el error
-    // Si no lo necesitas para la validación de horarios, considera omitirlo temporalmente
-    @Column(name = "hora")
-    private Integer hora;
-
     @Column(name = "hora_inicio")
     private LocalTime horaInicio;
 

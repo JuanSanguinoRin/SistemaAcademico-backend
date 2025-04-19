@@ -16,18 +16,6 @@ public class HistorialAcademico {
     @JoinColumn(name = "estudiante")
     private Estudiante estudiante;
     private Integer creditosAprobados;
-    
-
-    
-    // Métodos
-    public void calcularCreditosAprobados() {
-        // Implementación
-    }
-
-    public void obtenerCreditosAprobados() {
-
-    }
-    
 
 }
 
