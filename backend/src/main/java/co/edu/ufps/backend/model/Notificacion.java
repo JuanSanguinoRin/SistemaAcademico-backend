@@ -20,9 +20,11 @@ public class Notificacion {
     @OneToOne
     @JoinColumn(name = "mensaje")
     private Mensaje mensaje;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "destinatario")
     private Persona destinatario;
+
+    private Boolean abierta;
 
 
     private Boolean abierta;
