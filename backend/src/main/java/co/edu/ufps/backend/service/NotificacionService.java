@@ -79,8 +79,8 @@ public class NotificacionService {
         }
     }
 
+
     public List<Notificacion> getNotificacionesPorPersona(Long personaId) {
         return notificacionRepository.findByDestinatarioId(personaId);
     }
-
 }
