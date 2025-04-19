@@ -27,7 +27,7 @@ public class Notificacion {
     private Boolean abierta;
 
 
-    private Boolean abierta;
+
 
 
 

@@ -108,7 +108,7 @@ public class AsignacionService {
         asignacion.setDocente(docente);
         asignacion.setCurso(curso);
 
-        return asignacionRepository.save(asignacion);
+        return createAsignacion(asignacion);
     }
 
 
