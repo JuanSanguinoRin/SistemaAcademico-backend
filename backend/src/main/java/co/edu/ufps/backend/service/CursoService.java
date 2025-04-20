@@ -52,7 +52,6 @@ public class CursoService {
             curso.setNombre(cursoDetails.getNombre());
             curso.setDescripcion(cursoDetails.getDescripcion());
             curso.setContenido(cursoDetails.getContenido());
-            curso.setDocente(cursoDetails.getDocente());
             curso.setObjetivos(cursoDetails.getObjetivos());
             curso.setCompetencias(cursoDetails.getCompetencias());
             curso.setCupoMaximo(cursoDetails.getCupoMaximo());
