@@ -23,21 +23,5 @@ public class Reserva {
     @OneToOne
     @JoinColumn(name = "recurso")
     private Recurso recurso;
-    
-
-    
-    // Métodos
-    public void confirmarReserva() {
-        // Implementación
-    }
-    
-    public void cancelarReserva() {
-        // Implementación
-    }
-    
-    public void asignarHorario() {
-        // Implementación
-    }
-    
 
 }

@@ -33,34 +33,4 @@ public class Facturacion {
     @Temporal(TemporalType.DATE)
     private Date fechaPago;
 
-    // Métodos específicos
-    public void generarFactura() {
-        // Implementación del método
-    }
-    
-    public void aplicarDescuento(String concepto, double valor) {
-        // Implementación del método
-    }
-    
-    public void calcularTotal() {
-        // Implementación del método
-    }
-    
-    public void registrarPago(double monto, String metodoPago) {
-        // Implementación del método
-    }
-    
-    public void enviarFacturaElectronica() {
-        // Implementación del método
-    }
-    
-    public void generarReciboDigital() {
-        // Implementación del método
-    }
-    
-    public String consultarEstado() {
-        // Implementación del método
-        return estado;
-    }
-
 }
