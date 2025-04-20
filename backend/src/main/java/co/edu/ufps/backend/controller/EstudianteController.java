@@ -44,6 +44,9 @@ public class EstudianteController {
         return estudianteService.createEstudiante(estudiante);
     }
 
+
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Estudiante> updateEstudiante(@PathVariable Long id, @RequestBody Estudiante estudianteDetails) {
         try {

@@ -55,7 +55,6 @@ public class HorarioCursoService {
 
         // Si no hay conflictos, actualizar
         actual.setDia(horarioDetails.getDia());
-        actual.setHora(horarioDetails.getHora());
         actual.setAula(horarioDetails.getAula());
         actual.setCurso(horarioDetails.getCurso());
         actual.setHoraInicio(horarioDetails.getHoraInicio());

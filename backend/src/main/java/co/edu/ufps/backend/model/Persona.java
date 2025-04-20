@@ -19,7 +19,6 @@ public class Persona {
     private String nombre;
     private Long telefono;
     private Date fechaNacimiento;
-    private Integer edad;
     private String correoElectronico;
     private String correoInstitucional;
     private String direccion;

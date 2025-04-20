@@ -4,9 +4,11 @@ import co.edu.ufps.backend.model.HorarioAdministrativo;
 import co.edu.ufps.backend.model.AsignacionAdministrativo;
 import co.edu.ufps.backend.service.HorarioAdministrativoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -52,8 +54,8 @@ public class HorarioAdministrativoController {
     @PostMapping("/generar")
     public ResponseEntity<HorarioAdministrativo> generarHorario(@RequestParam String dia,
                                                                 @RequestParam String departamento,
-                                                                @RequestParam Date horaInicio,
-                                                                @RequestParam Date horaFin,
+                                                                @RequestParam LocalTime horaInicio,
+                                                                @RequestParam LocalTime horaFin,
                                                                 @RequestBody AsignacionAdministrativo asignacion) {
         try {
             HorarioAdministrativo nuevoHorario = horarioAdministrativoService.generarHorario(dia, departamento, horaInicio, horaFin, asignacion);

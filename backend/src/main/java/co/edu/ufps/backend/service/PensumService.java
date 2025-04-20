@@ -58,7 +58,7 @@ public class PensumService {
         Pensum pensum = pensumRepository.findById(idPensum)
                 .orElseThrow(() -> new RuntimeException("Pensum no encontrado"));
 
-        asignatura.setAsignatura(pensum);
+        asignatura.setPensum(pensum);
         return asignaturaRepository.save(asignatura);
     }
 

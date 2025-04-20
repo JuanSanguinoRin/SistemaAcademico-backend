@@ -25,7 +25,4 @@ public class Asistencia {
     private String estado;
     private String excusa;
 
-
-    
-
 }

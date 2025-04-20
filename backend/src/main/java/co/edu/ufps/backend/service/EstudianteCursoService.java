@@ -55,17 +55,15 @@ public class EstudianteCursoService {
     public List<EstudianteCurso> getEstudianteCursosByEstado(String estado) {
         return estudianteCursoRepository.findByEstado(estado);
     }
-
+    //no llamar
     public EstudianteCurso createEstudianteCurso(EstudianteCurso estudianteCurso) {
         return estudianteCursoRepository.save(estudianteCurso);
     }
 
     public EstudianteCurso updateEstudianteCurso(Long id, EstudianteCurso estudianteCursoDetails) {
         return estudianteCursoRepository.findById(id).map(estudianteCurso -> {
-            estudianteCurso.setCurso(estudianteCursoDetails.getCurso());
-            estudianteCurso.setEstudiante(estudianteCursoDetails.getEstudiante());
-            estudianteCurso.setEstado(estudianteCursoDetails.getEstado());
-            estudianteCurso.setHabilitacion(estudianteCursoDetails.getHabilitacion());
+            // pasar de Cursando a cancelado
+            estudianteCurso.setEstado("Cancelado");
             return estudianteCursoRepository.save(estudianteCurso);
         }).orElseThrow(() -> new RuntimeException("EstudianteCurso not found"));
     }
