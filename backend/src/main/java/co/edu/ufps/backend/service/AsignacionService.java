@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +24,13 @@ public class AsignacionService {
     private final DocenteService docenteService;
     private final CursoService cursoService;
     private final HorarioCursoService horarioCursoService;
+    private final EstudianteCursoService estudianteCursoService;
 
     public List<Curso> getCursosByDocente(Long docenteId) {
-        return asignacionRepository.findByDocenteId(docenteId);
+        return asignacionRepository.findByDocenteId(docenteId)
+                .stream()
+                .map(Asignacion::getCurso)
+                .collect(Collectors.toList()); // Asegúrate de importar java.util.stream.Collectors
     }
 
     /**
@@ -139,8 +144,36 @@ public class AsignacionService {
 
 
 
+    public Asistencia registrarAsistencia(Long docenteId, Long estudianteCursoId, Asistencia asistenciaInput) {
+        // 1. Obtener relación estudiante-curso
 
-    public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
+
+        EstudianteCurso estudianteCurso = estudianteCursoService.getById(estudianteCursoId);
+        Curso curso = estudianteCurso.getCurso();
+
+        // 2. Validar que el docente está asignado al curso
+        Optional<Asignacion> asignacionOpt = asignacionRepository.findByCursoId(curso.getId());
+
+        // Imprimir el resultado
+        if (asignacionOpt.isPresent()) {
+            System.out.println("Asignación encontrada: " + asignacionOpt.get());
+        } else {
+            System.out.println("No se encontró asignación para el curso con ID: " + curso.getId());
+        }
+
+        if (asignacionOpt.isEmpty()) {
+            throw new RuntimeException("No hay docente asignado a este curso");
+        }
+
+        Asignacion asignacion = asignacionOpt.get();
+
+        if (!asignacion.getDocente().getId().equals(docenteId)) {
+            throw new RuntimeException("El docente no tiene asignado este curso");
+        }
+
+
+
+        // 4. Registrar la asistencia
         return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
     }
 

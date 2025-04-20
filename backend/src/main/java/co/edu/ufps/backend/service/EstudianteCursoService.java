@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EstudianteCursoService {
     private final EstudianteCursoRepository estudianteCursoRepository;
-    private final AsistenciaService asistenciaService;
+
     private final EstudianteService estudianteService;
     private final CursoService cursoService;
     private final AsignaturaPrerrequisitoService asignaturaPrerrequisitoService;

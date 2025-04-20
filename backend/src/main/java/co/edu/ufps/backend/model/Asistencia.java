@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +20,8 @@ public class Asistencia {
     @JoinColumn(name = "idEstudianteCurso", nullable = false)
     private EstudianteCurso estudianteCurso;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
     private String estado;

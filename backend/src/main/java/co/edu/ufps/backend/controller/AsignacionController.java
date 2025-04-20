@@ -73,13 +73,15 @@ public class AsignacionController {
     }
 
     /**
-     * Registrar asistencia a un estudiante en curso
+     * Registrar asistencia a un estudiante en curso por parte del docente
      */
     @PostMapping("/registrar-asistencia")
     public ResponseEntity<Asistencia> registrarAsistencia(
+            @RequestParam Long docenteId,
             @RequestParam Long estudianteCursoId,
             @RequestBody Asistencia asistencia
     ) {
-        return ResponseEntity.ok(asignacionService.registrarAsistencia(estudianteCursoId, asistencia));
+        Asistencia registrada = asignacionService.registrarAsistencia(docenteId, estudianteCursoId, asistencia);
+        return ResponseEntity.ok(registrada);
     }
 }

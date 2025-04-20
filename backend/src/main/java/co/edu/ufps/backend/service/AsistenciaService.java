@@ -16,7 +16,8 @@ import java.util.Optional;
 public class AsistenciaService {
     @Autowired
     private final AsistenciaRepository asistenciaRepository;
-    //private final EstudianteCursoService estudianteCursoService;
+
+    private final EstudianteCursoService estudianteCursoService;
 
     /**
      * Obtener todas las asistencias
@@ -77,14 +78,11 @@ public class AsistenciaService {
         return asistenciaRepository.findAll();
     }
 
+
+
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
-
-        return null;
-
-    }
-
-    /*public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         // Usamos el service de EstudianteCurso para obtener la relación
+
         EstudianteCurso ec = estudianteCursoService.getById(estudianteCursoId);
 
         Asistencia asistencia = new Asistencia();
@@ -94,5 +92,8 @@ public class AsistenciaService {
         asistencia.setExcusa(asistenciaInput.getExcusa());
 
         return asistenciaRepository.save(asistencia);
-    }*/
+    }
+
+
+
 }
