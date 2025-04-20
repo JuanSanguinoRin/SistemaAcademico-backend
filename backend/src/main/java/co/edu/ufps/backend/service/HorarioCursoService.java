@@ -96,5 +96,19 @@ public class HorarioCursoService {
 
         return true; // No hay conflictos
     }
+
+    public boolean hayConflictoHorario(HorarioCurso h1, HorarioCurso h2) {
+
+        if (!h1.getDia().equals(h2.getDia())) {
+            return false;
+        }
+
+        LocalTime inicio1 = h1.getHoraInicio();
+        LocalTime fin1 = h1.getHoraFin();
+        LocalTime inicio2 = h2.getHoraInicio();
+        LocalTime fin2 = h2.getHoraFin();
+
+        return (inicio1.isBefore(fin2) && inicio2.isBefore(fin1));
+    }
 }
 
