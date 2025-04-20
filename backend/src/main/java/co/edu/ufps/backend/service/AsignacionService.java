@@ -24,6 +24,10 @@ public class AsignacionService {
     private final CursoService cursoService;
     private final HorarioCursoService horarioCursoService;
 
+    public List<Curso> getCursosByDocente(Long docenteId) {
+        return asignacionRepository.findByDocenteId(docenteId);
+    }
+
     /**
      * Obtener todas las asignaciones
      * @return lista de asignaciones
@@ -110,7 +114,7 @@ public class AsignacionService {
             }
 
             // Obtener todos los cursos asignados previamente al docente
-            List<Curso> cursosDelDocente = cursoService.getCursosByDocente(docenteId);
+            List<Curso> cursosDelDocente = getCursosByDocente(docenteId);
 
             for (Curso cursoActual : cursosDelDocente) {
                 List<HorarioCurso> horariosCursoActual = horarioCursoService.getAllHorariosByCurso(cursoActual.getId());

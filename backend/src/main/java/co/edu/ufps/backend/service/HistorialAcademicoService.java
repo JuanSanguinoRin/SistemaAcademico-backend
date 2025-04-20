@@ -79,7 +79,7 @@ public class HistorialAcademicoService {
         return totalCreditos;
 
     }
-/*
+
     public Double calcularPromedioPonderado(Long estudianteId) {
         // Obtener cursos aprobados
         List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
@@ -95,12 +95,12 @@ public class HistorialAcademicoService {
             // Obtenemos la nota definitiva del curso
 
             int creditos = ec.getCurso().getAsignatura().getCreditos();
-            sumaPonderada += estudianteCursoService.calcularDefinitiva(ec.getId()) * creditos;
+            sumaPonderada += calcularDefinitivaPorEstudianteCurso(ec.getId()) * creditos;
             totalCreditos += creditos;
         }
 
-        return totalCreditos > 0 ? sumaPonderada / totalCreditos : 0.0;
-    }*/
+        return totalCreditos > 0 ? sumaPonderada / totalCreditos : 0.0f;
+    }
 
     public List<EstudianteCurso> getAllEstudianteCursoByEstudiante(Long estudianteId)
     {

@@ -29,9 +29,7 @@ public class CursoService {
         return cursoRepository.findBySemestreId(semestreId);
     }
 
-    public List<Curso> getCursosByDocente(Long docenteId) {
-        return cursoRepository.findByDocenteId(docenteId);
-    }
+
 
     public List<Curso> getCursosVacacionales(Boolean vacacional) {
         return cursoRepository.findByVacacional(vacacional);
@@ -52,7 +50,6 @@ public class CursoService {
             curso.setNombre(cursoDetails.getNombre());
             curso.setDescripcion(cursoDetails.getDescripcion());
             curso.setContenido(cursoDetails.getContenido());
-            curso.setDocente(cursoDetails.getDocente());
             curso.setObjetivos(cursoDetails.getObjetivos());
             curso.setCompetencias(cursoDetails.getCompetencias());
             curso.setCupoMaximo(cursoDetails.getCupoMaximo());

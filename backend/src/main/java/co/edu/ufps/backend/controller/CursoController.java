@@ -39,11 +39,6 @@ public class CursoController {
         return cursoService.getCursosBySemestre(semestreId);
     }
 
-    @GetMapping("/docente/{docenteId}")
-    public List<Curso> getCursosByDocente(@PathVariable Long docenteId) {
-        return cursoService.getCursosByDocente(docenteId);
-    }
-
     @GetMapping("/vacacionales")
     public List<Curso> getCursosVacacionales(@RequestParam Boolean vacacional) {
         return cursoService.getCursosVacacionales(vacacional);

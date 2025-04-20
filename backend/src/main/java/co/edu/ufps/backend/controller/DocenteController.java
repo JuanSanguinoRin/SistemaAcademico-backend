@@ -56,7 +56,7 @@ public class DocenteController {
         docenteService.deleteDocente(codigoDocente);
         return ResponseEntity.noContent().build();
     }
-
+/*
     // 1. Obtener todos los cursos de un docente
     @GetMapping("/{codigoDocente}/cursos")
     public ResponseEntity<List<Curso>> getCursosDelDocente(@PathVariable Long codigoDocente) {
@@ -73,7 +73,7 @@ public class DocenteController {
     @GetMapping("/{codigoDocente}/notas")
     public ResponseEntity<List<Calificacion>> getNotasDeCursosDocente(@PathVariable Long codigoDocente) {
         return ResponseEntity.ok(docenteService.getNotasDeCursosDocente(codigoDocente));
-    }
+    }*/
 
     // 4. Definir un nuevo horario para un curso (crear)
     @PostMapping("/horarios")
