@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface CursoRepository extends JpaRepository<Curso, Long> {
     List<Curso> findByProgramaId(Long programaId);
     List<Curso> findBySemestreId(Long semestreId);
-    List<Curso> findByDocenteId(Long docenteId);
+
     List<Curso> findByVacacional(Boolean vacacional);
 }

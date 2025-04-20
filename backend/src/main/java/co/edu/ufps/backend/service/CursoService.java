@@ -29,9 +29,7 @@ public class CursoService {
         return cursoRepository.findBySemestreId(semestreId);
     }
 
-    public List<Curso> getCursosByDocente(Long docenteId) {
-        return cursoRepository.findByDocenteId(docenteId);
-    }
+
 
     public List<Curso> getCursosVacacionales(Boolean vacacional) {
         return cursoRepository.findByVacacional(vacacional);
