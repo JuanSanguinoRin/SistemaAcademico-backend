@@ -88,20 +88,8 @@ public class AsignacionService {
             throw new RuntimeException("Ya existe un docente asignado a este curso");
         }
 
-        // 4. Validar que no haya cruce de horarios con otros cursos del docente
-        List<HorarioCurso> horariosNuevoCurso = horarioCursoService.getAllHorarios().stream()
-                .filter(h -> h.getCurso().getId().equals(cursoId))
-                .toList();
-
-        List<HorarioCurso> horariosDocente = docenteService.getHorariosByDocente(docenteId);
-
-        for (HorarioCurso nuevo : horariosNuevoCurso) {
-            for (HorarioCurso actual : horariosDocente) {
-                if (horarioCursoService.seSolapan(nuevo, actual)) {
-                    throw new RuntimeException("El docente tiene un conflicto de horario con el curso: " + actual.getCurso().getNombre());
-                }
-            }
-        }
+        // Validar conflictos de horario
+        validarHorariosDocente(docenteId, cursoId);
 
         // 5. Si pasa todas las validaciones, crear la asignación
         Asignacion asignacion = new Asignacion();
@@ -109,6 +97,40 @@ public class AsignacionService {
         asignacion.setCurso(curso);
 
         return createAsignacion(asignacion);
+    }
+
+    private void validarHorariosDocente(Long docenteId, Long cursoId) {
+        try {
+            Curso cursoNuevo = cursoService.getCursoById(cursoId)
+                    .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+
+            List<HorarioCurso> horariosNuevoCurso = horarioCursoService.getAllHorariosByCurso(cursoId);
+            if (horariosNuevoCurso.isEmpty()) {
+                throw new RuntimeException("El curso no tiene horarios definidos.");
+            }
+
+            // Obtener todos los cursos asignados previamente al docente
+            List<Curso> cursosDelDocente = cursoService.getCursosByDocente(docenteId);
+
+            for (Curso cursoActual : cursosDelDocente) {
+                List<HorarioCurso> horariosCursoActual = horarioCursoService.getAllHorariosByCurso(cursoActual.getId());
+
+                for (HorarioCurso horarioActual : horariosCursoActual) {
+                    for (HorarioCurso horarioNuevo : horariosNuevoCurso) {
+                        if (horarioCursoService.hayConflictoHorario(horarioActual, horarioNuevo)) {
+                            throw new RuntimeException(
+                                    "Conflicto de horario con el curso '" + cursoActual.getNombre() +
+                                            "'. Día: " + horarioNuevo.getDia() +
+                                            ", Hora: " + horarioNuevo.getHoraInicio() + " - " + horarioNuevo.getHoraFin()
+                            );
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al validar horarios del docente: " + e.getMessage(), e);
+        }
     }
 
 
