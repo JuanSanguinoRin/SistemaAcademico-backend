@@ -76,7 +76,7 @@ public class DocenteService {
     }
 
     // 1. Consultar horarios del docente
-    public List<HorarioCurso> getHorariosByDocente(Long docenteId) {
+    /*public List<HorarioCurso> getHorariosByDocente(Long docenteId) {
         List<Curso> cursos = cursoService.getCursosByDocente(docenteId);
         return cursos.stream()
                 .flatMap(curso -> horarioCursoService.getAllHorarios().stream()
@@ -104,7 +104,7 @@ public class DocenteService {
                     return idsCursos.contains(cursoId);
                 })
                 .toList();
-    }
+    }*/
 
     // 4. Definir (crear) un horario para un curso
     public HorarioCurso definirHorarioCurso(HorarioCurso horarioCurso) {

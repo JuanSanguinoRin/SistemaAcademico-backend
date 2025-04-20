@@ -15,23 +15,4 @@ public class Material extends Recurso{
     private String estado;
     private String tipo;
 
-    
-    // Métodos
-    public void reservar() {
-        // Implementación
-    }
-    
-    public void liberar() {
-        // Implementación
-    }
-    
-    public void devolver() {
-        // Implementación
-    }
-    
-    public void crearRecurso() {
-        // Implementación
-    }
-    
-
 }

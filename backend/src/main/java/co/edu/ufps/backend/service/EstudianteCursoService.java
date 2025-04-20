@@ -55,17 +55,15 @@ public class EstudianteCursoService {
     public List<EstudianteCurso> getEstudianteCursosByEstado(String estado) {
         return estudianteCursoRepository.findByEstado(estado);
     }
-
+    //no llamar
     public EstudianteCurso createEstudianteCurso(EstudianteCurso estudianteCurso) {
         return estudianteCursoRepository.save(estudianteCurso);
     }
 
     public EstudianteCurso updateEstudianteCurso(Long id, EstudianteCurso estudianteCursoDetails) {
         return estudianteCursoRepository.findById(id).map(estudianteCurso -> {
-            estudianteCurso.setCurso(estudianteCursoDetails.getCurso());
-            estudianteCurso.setEstudiante(estudianteCursoDetails.getEstudiante());
-            estudianteCurso.setEstado(estudianteCursoDetails.getEstado());
-            estudianteCurso.setHabilitacion(estudianteCursoDetails.getHabilitacion());
+            // pasar de Cursando a cancelado
+            estudianteCurso.setEstado("Cancelado");
             return estudianteCursoRepository.save(estudianteCurso);
         }).orElseThrow(() -> new RuntimeException("EstudianteCurso not found"));
     }
@@ -227,7 +225,7 @@ public class EstudianteCursoService {
 
                 for (HorarioCurso horarioActual : horariosCursoActual) {
                     for (HorarioCurso horarioNuevo : horariosNuevoCurso) {
-                        if (hayConflictoHorario(horarioActual, horarioNuevo)) {
+                        if (horarioCursoService.hayConflictoHorario(horarioActual, horarioNuevo)) {
                             throw new RuntimeException(
                                     "Conflicto de horario con el curso " + ec.getCurso().getNombre() +
                                             ". Día: " + horarioNuevo.getDia() +
@@ -242,19 +240,7 @@ public class EstudianteCursoService {
         }
     }
 
-    private boolean hayConflictoHorario(HorarioCurso h1, HorarioCurso h2) {
 
-        if (!h1.getDia().equals(h2.getDia())) {
-            return false;
-        }
-
-        LocalTime inicio1 = h1.getHoraInicio();
-        LocalTime fin1 = h1.getHoraFin();
-        LocalTime inicio2 = h2.getHoraInicio();
-        LocalTime fin2 = h2.getHoraFin();
-
-        return (inicio1.isBefore(fin2) && inicio2.isBefore(fin1));
-    }
 
     // Metodo para obtener cursos aprobados de un estudiante específico
     public List<EstudianteCurso> getCursosAprobadosByEstudiante(Long estudianteId) {

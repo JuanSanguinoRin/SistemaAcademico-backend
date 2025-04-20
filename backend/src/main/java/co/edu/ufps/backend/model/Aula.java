@@ -1,6 +1,7 @@
 package co.edu.ufps.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -16,7 +17,11 @@ public class Aula extends Recurso {
     private String ubicacion;
     private Integer dimensiones;
     private String tipo;
-    private String estado;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private EstadoAula estado;
+
     private Boolean esExamen;
 
 }

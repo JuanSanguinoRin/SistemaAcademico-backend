@@ -18,10 +18,6 @@ public class Curso {
     private String descripcion;
     private String contenido;
 
-    @ManyToOne
-    @JoinColumn(name = "docente_id")
-    private Docente docente;
-
     private String objetivos;
     private String competencias;
     private Integer cupoMaximo;

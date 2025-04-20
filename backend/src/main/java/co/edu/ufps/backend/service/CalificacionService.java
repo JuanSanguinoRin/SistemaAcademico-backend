@@ -2,6 +2,7 @@ package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.EstudianteCurso;
+import co.edu.ufps.backend.model.TipoEvaluacion;
 import co.edu.ufps.backend.repository.CalificacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,10 @@ public class CalificacionService {
         calificacionRepository.deleteById(id);
     }
 
-    public boolean tipoYaExisteParaEstudianteCurso(Long estudianteCursoId, String tipo) {
+    public boolean tipoYaExisteParaEstudianteCurso(Long estudianteCursoId, TipoEvaluacion tipo) {
         return calificacionRepository.findByEstudianteCursoId(estudianteCursoId)
                 .stream()
-                .anyMatch(c -> c.getTipo().equalsIgnoreCase(tipo));
+                .anyMatch(c -> c.getTipo() == tipo);
     }
 
 
@@ -96,7 +97,7 @@ public class CalificacionService {
         Calificacion calificacionExistente = this.getById(calificacionId);
 
         // Validar si el tipo de calificación ha cambiado
-        if (!calificacionExistente.getTipo().equalsIgnoreCase(calificacionActualizada.getTipo())) {
+        if (calificacionExistente.getTipo() != calificacionActualizada.getTipo()) {
             boolean tipoYaExiste = this.tipoYaExisteParaEstudianteCurso(
                     calificacionExistente.getEstudianteCurso().getId(), calificacionActualizada.getTipo()
             );

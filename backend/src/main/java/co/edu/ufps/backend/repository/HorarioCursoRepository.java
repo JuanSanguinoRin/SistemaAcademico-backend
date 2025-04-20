@@ -19,7 +19,7 @@ public interface HorarioCursoRepository extends JpaRepository<HorarioCurso, Long
     List<HorarioCurso> findByDia(co.edu.ufps.backend.model.DiaSemana dia);
 
     // Buscar por docente (a través del curso)
-    List<HorarioCurso> findByCursoDocenteId(Long docenteId);
+    //List<HorarioCurso> findByCursoDocenteId(Long docenteId);
 
     // Buscar por estudiante (a través del curso → EstudianteCurso) REVISAR
     //List<HorarioCurso> findByCursoEstudiantesEstudianteCodigoEstudiante(Long estudianteId);

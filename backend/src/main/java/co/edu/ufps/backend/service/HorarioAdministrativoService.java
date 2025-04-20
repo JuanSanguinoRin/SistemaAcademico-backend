@@ -6,6 +6,7 @@ import co.edu.ufps.backend.repository.HorarioAdministrativoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Date;
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class HorarioAdministrativoService {
 
 
     // Métodos de la clase
-    public HorarioAdministrativo generarHorario(String dia, String departamento, Date horaInicio, Date horaFin, AsignacionAdministrativo asignacion) {
+    public HorarioAdministrativo generarHorario(String dia, String departamento, LocalTime horaInicio, LocalTime horaFin, AsignacionAdministrativo asignacion) {
         if (asignacion == null || asignacion.getPersonal() == null) {
             throw new IllegalArgumentException("La asignación del empleado no puede ser nula.");
         }

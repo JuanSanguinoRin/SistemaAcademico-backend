@@ -3,6 +3,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -16,13 +17,9 @@ public class HorarioCurso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "dia")
-    private String dia;
-
-    // El campo 'hora' es problemático, ya que parece estar causando el error
-    // Si no lo necesitas para la validación de horarios, considera omitirlo temporalmente
-    @Column(name = "hora")
-    private Integer hora;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private DiaSemana dia;
 
     @Column(name = "hora_inicio")
     private LocalTime horaInicio;

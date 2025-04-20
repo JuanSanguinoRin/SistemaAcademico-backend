@@ -25,4 +25,6 @@ public class Publicacion {
     @JoinColumn(name = "foro_id", nullable = false)
     private Foro foro;
 
+    private String contenido;
+
 }

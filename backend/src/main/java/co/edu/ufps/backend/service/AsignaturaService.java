@@ -44,7 +44,6 @@ public class AsignaturaService {
             asignatura.setSemestre(asignaturaDetails.getSemestre());
             asignatura.setHoras(asignaturaDetails.getHoras());
             asignatura.setTipoAsignatura(asignaturaDetails.getTipoAsignatura());
-            asignatura.setAsignatura(asignaturaDetails.getAsignatura());
             return asignaturaRepository.save(asignatura);
         }).orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
     }
