@@ -37,4 +37,26 @@ public class RecursoController {
      * Crear un nuevo recurso
      */
     @PostMapping
-    public ResponseEntity<Recurso>
+    public ResponseEntity<Recurso> createRecurso(@RequestBody Recurso recurso) {
+        return ResponseEntity.ok(recursoService.createRecurso(recurso));
+    }
+
+    /**
+     * Actualizar un recurso existente
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Recurso> updateRecurso(
+            @PathVariable Long id,
+            @RequestBody Recurso recursoDetails) {
+        return ResponseEntity.ok(recursoService.updateRecurso(id, recursoDetails));
+    }
+
+    /**
+     * Eliminar un recurso por su ID
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecurso(@PathVariable Long id) {
+        recursoService.deleteRecurso(id);
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -1,5 +1,7 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.Foro;
+import co.edu.ufps.backend.model.Persona;
 import co.edu.ufps.backend.model.Publicacion;
 import co.edu.ufps.backend.repository.PublicacionRepository;
 import lombok.RequiredArgsConstructor;

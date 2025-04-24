@@ -38,6 +38,5 @@ public class ForoService {
 
     public void deleteForo(Long id) {
         foroRepository.deleteById(id);
-
-
+    }
 }
