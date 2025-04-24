@@ -4,6 +4,7 @@ import co.edu.ufps.backend.model.Reserva;
 import co.edu.ufps.backend.service.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +36,20 @@ public class ReservaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Crear una nueva reserva
-     */
-    @PostMapping
-    public ResponseEntity<Reserva> createReserva(@RequestBody Reserva reserva) {
-        return ResponseEntity.ok(reservaService.createReserva(reserva));
+    // ✅ Crear una nueva reserva
+    @PostMapping("/crear")
+    public ResponseEntity<Reserva> crearReserva(@RequestBody Reserva reserva) {
+        // Llamamos al servicio para crear la reserva
+        Reserva nuevaReserva = reservaService.crearReserva(
+                reserva.getUsuario(),
+                reserva.getRecurso(),
+                reserva.getDia(),
+                reserva.getHoraInicio(),
+                reserva.getHoraFin(),
+                reserva.getEsMantenimiento()
+        );
+
+        return new ResponseEntity<>(nuevaReserva, HttpStatus.CREATED);
     }
 
     /**
@@ -95,16 +104,14 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.buscarReservasPorFecha(dia));
     }
 
-    /**
-     * Verificar si un recurso está ocupado en un rango horario
-     */
-    @GetMapping("/ocupado")
-    public ResponseEntity<Boolean> estaRecursoOcupado(
-            @RequestParam Long recursoId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dia,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) Date horaInicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) Date horaFin) {
-        boolean ocupado = reservaService.estaRecursoOcupado(recursoId, dia, horaInicio, horaFin);
-        return ResponseEntity.ok(ocupado);
+    // ✅ Marcar una reserva como devuelta
+    @PutMapping("/devolver/{reservaId}")
+    public ResponseEntity<Reserva> devolverMaterial(@PathVariable Long reservaId) {
+        try {
+            Reserva reserva = reservaService.marcarComoDevuelto(reservaId);
+            return new ResponseEntity<>(reserva, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 }

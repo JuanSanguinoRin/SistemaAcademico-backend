@@ -88,11 +88,13 @@ public class PersonaService {
         return reservaService.getReservasByPersona(cedula);
     }
 
-    public Reserva crearReservaParaPersona(Long cedulaPersona, Long recursoId, Date dia, Date horaInicio, Date horaFin) {
+    public Reserva crearReservaParaPersona(Long cedulaPersona, Long recursoId, Date dia, Date horaInicio, Date horaFin, Boolean esMantenimiento) {
 
+        // Buscar la persona con la cédula proporcionada
         Persona persona = personaRepository.findById(cedulaPersona)
                 .orElseThrow(() -> new RuntimeException("Persona con cédula " + cedulaPersona + " no encontrada"));
 
+        // Buscar el recurso con el ID proporcionado
         Recurso recurso = recursoRepository.findById(recursoId)
                 .orElseThrow(() -> new RuntimeException("Recurso con ID " + recursoId + " no encontrado"));
 
@@ -103,15 +105,18 @@ public class PersonaService {
         }
 
         // Crear nueva reserva
-        Reserva reserva = new Reserva();
-        reserva.setUsuario(persona);
-        reserva.setRecurso(recurso);
-        reserva.setDia(dia);
-        reserva.setHoraInicio(horaInicio);
-        reserva.setHoraFin(horaFin);
+        // Llamamos al método de crearReserva del servicio, pasando los parámetros requeridos
+        Reserva reserva = reservaService.crearReserva(persona, recurso, dia, horaInicio, horaFin, esMantenimiento);
 
-        return reservaService.createReserva(reserva);
+        // Inicializamos los valores de 'devuelto' y 'horaDevolucion' como null
+        reserva.setDevuelto(null);
+        reserva.setHoraDevolucion(null);
+
+        // Retornamos la reserva creada
+        return reserva;
     }
+
+
 
     // Y MENSJAE
 }

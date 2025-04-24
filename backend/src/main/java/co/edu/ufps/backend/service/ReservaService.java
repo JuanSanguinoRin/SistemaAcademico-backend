@@ -1,5 +1,7 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.Persona;
+import co.edu.ufps.backend.model.Recurso;
 import co.edu.ufps.backend.model.Reserva;
 import co.edu.ufps.backend.repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +26,35 @@ public class ReservaService {
         return reservaRepository.findById(id);
     }
 
-    public Reserva createReserva(Reserva reserva) {
-        // Validar si el recurso ya está reservado en el mismo horario
-        List<Reserva> reservasExistentes = reservaRepository
-                .findByRecursoIdAndDiaAndHoraInicioLessThanAndHoraFinGreaterThan(
-                        reserva.getRecurso().getId(),
-                        reserva.getDia(),
-                        reserva.getHoraFin(),
-                        reserva.getHoraInicio()
-                );
-
-        if (!reservasExistentes.isEmpty()) {
-            throw new RuntimeException("El recurso ya está reservado en ese horario.");
-        }
+    // ✅ Crear una nueva reserva (es o no de mantenimiento)
+    public Reserva crearReserva(Persona persona, Recurso recurso, Date dia, Date horaInicio, Date horaFin, Boolean esMantenimiento) {
+        Reserva reserva = new Reserva();
+        reserva.setUsuario(persona);
+        reserva.setRecurso(recurso);
+        reserva.setDia(dia);
+        reserva.setHoraInicio(horaInicio);
+        reserva.setHoraFin(horaFin);
+        reserva.setEsMantenimiento(esMantenimiento); // puede ser true, false o null
+        reserva.setDevuelto(null); // aún no devuelto
+        reserva.setHoraDevolucion(null); // aún no devuelto
 
         return reservaRepository.save(reserva);
     }
+
+    // ✅ Registrar devolución del recurso
+    public Reserva marcarComoDevuelto(Long reservaId) throws Exception {
+        Optional<Reserva> reservaOpt = reservaRepository.findById(reservaId);
+        if (reservaOpt.isEmpty()) {
+            throw new Exception("Reserva no encontrada con ID: " + reservaId);
+        }
+
+        Reserva reserva = reservaOpt.get();
+        reserva.setDevuelto(true);
+        reserva.setHoraDevolucion(new Date()); // Fecha/hora actual
+
+        return reservaRepository.save(reserva);
+    }
+
 
     public Reserva updateReserva(Long id, Reserva reservaDetails) {
         return reservaRepository.findById(id).map(reserva -> {
