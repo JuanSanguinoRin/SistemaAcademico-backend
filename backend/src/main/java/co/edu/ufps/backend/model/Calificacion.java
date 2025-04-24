@@ -1,4 +1,5 @@
 package co.edu.ufps.backend.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,9 @@ public class Calificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     private String tipo; //P1, P2, P3, EX, H
     private Float nota;
