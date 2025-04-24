@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalTime;
@@ -110,5 +112,43 @@ public class HorarioCursoService {
 
         return (inicio1.isBefore(fin2) && inicio2.isBefore(fin1));
     }
+
+
+    public boolean fechaCoincideConHorario(Date fecha, HorarioCurso horario) {
+        // Obtener día de la semana en texto desde la fecha
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fecha);
+
+        int diaSemana = calendar.get(Calendar.DAY_OF_WEEK); // 1=Domingo, 2=Lunes, ..., 7=Sábado
+        String diaTexto = mapearDiaSemana(diaSemana); // Método auxiliar
+
+        // Validar día
+        if (!horario.getDia().equalsIgnoreCase(diaTexto)) {
+            return false;
+        }
+
+        // Obtener hora y minutos
+        int hora = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutos = calendar.get(Calendar.MINUTE);
+        LocalTime horaAsistencia = LocalTime.of(hora, minutos);
+
+        // Validar si la hora está dentro del rango del horario
+        return !horaAsistencia.isBefore(horario.getHoraInicio()) &&
+                !horaAsistencia.isAfter(horario.getHoraFin());
+    }
+
+    private String mapearDiaSemana(int diaSemana) {
+        return switch (diaSemana) {
+            case Calendar.MONDAY    -> "LUNES";
+            case Calendar.TUESDAY   -> "MARTES";
+            case Calendar.WEDNESDAY -> "MIERCOLES";
+            case Calendar.THURSDAY  -> "JUEVES";
+            case Calendar.FRIDAY    -> "VIERNES";
+            case Calendar.SATURDAY  -> "SABADO";
+            case Calendar.SUNDAY    -> "DOMINGO";
+            default -> throw new IllegalArgumentException("Día inválido");
+        };
+    }
+
 }
 

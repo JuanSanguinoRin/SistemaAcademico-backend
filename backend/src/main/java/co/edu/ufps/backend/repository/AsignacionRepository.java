@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     Optional<Asignacion> findByCursoId(Long cursoId);
-    List<Curso> findByDocenteId(Long docenteId);
+    List<Asignacion> findByDocenteId(Long docenteId); // <--- CORREGIDO AQUÍ
     Optional<Asignacion> findByDocenteIdAndCursoId(Long docenteId, Long cursoId);
 }
