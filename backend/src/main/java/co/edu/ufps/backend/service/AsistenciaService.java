@@ -35,14 +35,6 @@ public class AsistenciaService {
         return asistenciaRepository.findById(id);
     }
 
-    /**
-     * Crear una nueva asistencia
-     * @param asistencia Objeto de tipo Asistencia
-     * @return Asistencia creada
-     */
-    public Asistencia createAsistencia(Asistencia asistencia) {
-        return asistenciaRepository.save(asistencia);
-    }
 
     /**
      * Actualizar una asistencia existente
@@ -77,22 +69,44 @@ public class AsistenciaService {
         return asistenciaRepository.findAll();
     }
 
+
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
 
-        return null;
+        // Crear una nueva instancia de Asistencia, sin necesidad de EstudianteCursoRepository
+        Asistencia asistencia = new Asistencia();
+
+        // Aquí se podría buscar el EstudianteCurso desde la base de datos directamente con una consulta
+        // Usando AsistenciaRepository, se asume que existe un campo idEstudianteCurso en la entidad Asistencia.
+        Optional<Asistencia> estudianteCurso = asistenciaRepository.findById(estudianteCursoId);
+
+        if (estudianteCurso.isEmpty()) {
+            throw new RuntimeException("EstudianteCurso no encontrado");
+        }
+
+        asistencia.setEstudianteCurso(estudianteCurso.get().getEstudianteCurso());
+        asistencia.setFecha(asistenciaInput.getFecha() != null ? asistenciaInput.getFecha() : new Date());
+        asistencia.setEstado(asistenciaInput.getEstado() != null ? asistenciaInput.getEstado() : "PRESENTE"); // Por defecto "PRESENTE"
+        asistencia.setExcusa(null); // No hay excusa al registrar normalmente
+
+        return asistenciaRepository.save(asistencia);
 
     }
 
-    /*public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
-        // Usamos el service de EstudianteCurso para obtener la relación
-        EstudianteCurso ec = estudianteCursoService.getById(estudianteCursoId);
+    public Asistencia justificarInasistencia(Long asistenciaId, String excusa) {
+        Asistencia asistencia = asistenciaRepository.findById(asistenciaId)
+                .orElseThrow(() -> new RuntimeException("Asistencia no encontrada"));
 
-        Asistencia asistencia = new Asistencia();
-        asistencia.setEstudianteCurso(ec);
-        asistencia.setFecha(asistenciaInput.getFecha());
-        asistencia.setEstado(asistenciaInput.getEstado());
-        asistencia.setExcusa(asistenciaInput.getExcusa());
+        // Solo permitir justificar si la asistencia está en estado "AUSENTE"
+        if (!"AUSENTE".equals(asistencia.getEstado())) {
+            throw new RuntimeException("Solo se pueden justificar las inasistencias.");
+        }
+
+        asistencia.setEstado("JUSTIFICADA"); // Cambiar estado a "JUSTIFICADA"
+        asistencia.setExcusa(excusa);
 
         return asistenciaRepository.save(asistencia);
-    }*/
+    }
+
+
+
 }

@@ -1,5 +1,7 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.Foro;
+import co.edu.ufps.backend.model.Persona;
 import co.edu.ufps.backend.model.Publicacion;
 import co.edu.ufps.backend.repository.PublicacionRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,15 +36,6 @@ public class PublicacionService {
         return publicacionRepository.findById(id);
     }
 
-    /**
-     * Crear una nueva publicación
-     * @param publicacion Objeto Publicacion a guardar
-     * @return Publicación creada
-     */
-    public Publicacion createPublicacion(Publicacion publicacion) {
-        publicacion.setFechaEnvio(new Date()); // Establece la fecha de envío automáticamente
-        return publicacionRepository.save(publicacion);
-    }
 
     /**
      * Actualizar una publicación existente
@@ -83,5 +76,15 @@ public class PublicacionService {
      */
     public List<Publicacion> getPublicacionesByAutor(String autorCedula) {
         return publicacionRepository.findAll();
+    }
+
+    public Publicacion publicar(Persona autor, Foro foro, String contenido) {
+        Publicacion publicacion = new Publicacion();
+        publicacion.setAutor(autor);
+        publicacion.setForo(foro);
+        publicacion.setContenido(contenido);
+        publicacion.setFechaEnvio(new Date());
+
+        return publicacionRepository.save(publicacion);
     }
 }

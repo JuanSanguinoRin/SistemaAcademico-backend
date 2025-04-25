@@ -3,12 +3,12 @@ package co.edu.ufps.backend.controller;
 import co.edu.ufps.backend.model.Asistencia;
 import co.edu.ufps.backend.service.AsistenciaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/asistencias")
@@ -17,55 +17,77 @@ public class AsistenciaController {
 
     private final AsistenciaService asistenciaService;
 
+    /**
+     * Obtener todas las asistencias
+     * @return Lista de asistencias
+     */
     @GetMapping
-    public ResponseEntity<List<Asistencia>> getAllAsistencias() {
-        return ResponseEntity.ok(asistenciaService.getAllAsistencias());
+    public List<Asistencia> getAllAsistencias() {
+        return asistenciaService.getAllAsistencias();
     }
 
+    /**
+     * Obtener una asistencia por su ID
+     * @param id ID de la asistencia
+     * @return La asistencia encontrada
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<Asistencia> getAsistenciaById(@PathVariable Long id) {
+    public Asistencia getAsistenciaById(@PathVariable Long id) {
         return asistenciaService.getAsistenciaById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("Asistencia no encontrada"));
     }
 
-    @PostMapping
-    public ResponseEntity<Asistencia> createAsistencia(@RequestBody Asistencia asistencia) {
-        return ResponseEntity.ok(asistenciaService.createAsistencia(asistencia));
+    /**
+     * Registrar una nueva asistencia
+     * @param estudianteCursoId ID del estudiante en el curso
+     * @param asistenciaInput Datos de la asistencia a registrar
+     * @return La asistencia registrada
+     */
+    @PostMapping("/{estudianteCursoId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Asistencia registrarAsistencia(@PathVariable Long estudianteCursoId, @RequestBody Asistencia asistenciaInput) {
+        return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
     }
 
+    /**
+     * Actualizar una asistencia existente
+     * @param id ID de la asistencia a actualizar
+     * @param asistenciaDetails Detalles actualizados de la asistencia
+     * @return La asistencia actualizada
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<Asistencia> updateAsistencia(@PathVariable Long id, @RequestBody Asistencia asistenciaDetails) {
-        try {
-            Asistencia actualizada = asistenciaService.updateAsistencia(id, asistenciaDetails);
-            return ResponseEntity.ok(actualizada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Asistencia updateAsistencia(@PathVariable Long id, @RequestBody Asistencia asistenciaDetails) {
+        return asistenciaService.updateAsistencia(id, asistenciaDetails);
     }
 
+    /**
+     * Eliminar una asistencia por su ID
+     * @param id ID de la asistencia a eliminar
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAsistencia(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAsistencia(@PathVariable Long id) {
         asistenciaService.deleteAsistencia(id);
-        return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Justificar una inasistencia
+     * @param asistenciaId ID de la asistencia a justificar
+     * @param excusa Texto con la justificación
+     * @return La asistencia con la excusa registrada
+     */
+    @PutMapping("/justificar/{asistenciaId}")
+    public Asistencia justificarInasistencia(@PathVariable Long asistenciaId, @RequestParam String excusa) {
+        return asistenciaService.justificarInasistencia(asistenciaId, excusa);
+    }
+
+    /**
+     * Buscar asistencias por una fecha específica
+     * @param fecha Fecha para filtrar asistencias
+     * @return Lista de asistencias en la fecha especificada
+     */
     @GetMapping("/fecha")
-    public ResponseEntity<List<Asistencia>> getAsistenciasByFecha(@RequestParam Date fecha) {
-        return ResponseEntity.ok(asistenciaService.getAsistenciasByFecha(fecha));
-    }
-
-    // Registrar asistencia desde estudianteCurso
-    @PostMapping("/registrar/{estudianteCursoId}")
-    public ResponseEntity<?> registrarAsistenciaDesdeEstudianteCurso(
-            @PathVariable Long estudianteCursoId,
-            @RequestBody Asistencia asistenciaInput
-    ) {
-        try {
-            Asistencia creada = asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
-            return ResponseEntity.ok(creada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+    public List<Asistencia> getAsistenciasByFecha(@RequestParam Date fecha) {
+        return asistenciaService.getAsistenciasByFecha(fecha);
     }
 }
