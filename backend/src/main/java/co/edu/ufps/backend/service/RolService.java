@@ -29,9 +29,6 @@ public class RolService {
 
     public Rol updateRol(Long id, Rol rolDetails) {
         return rolRepository.findById(id).map(rol -> {
-            rol.setNivelAcceso(rolDetails.getNivelAcceso());
-            rol.setModulo(rolDetails.getModulo());
-            rol.setPersona(rolDetails.getPersona());
             return rolRepository.save(rol);
         }).orElseThrow(() -> new RuntimeException("Rol not found"));
     }

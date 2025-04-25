@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.controller;
 
+import co.edu.ufps.backend.model.EstadoFacturacion;
 import co.edu.ufps.backend.model.Facturacion;
 import co.edu.ufps.backend.service.FacturacionService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class FacturacionController {
 
     @PutMapping("/{numeroFactura}/estado")
     public ResponseEntity<Facturacion> actualizarEstado(@PathVariable String numeroFactura,
-                                                        @RequestParam String estado) {
+                                                        @RequestParam EstadoFacturacion estado) {
         return facturacionService.actualizarEstado(numeroFactura, estado)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

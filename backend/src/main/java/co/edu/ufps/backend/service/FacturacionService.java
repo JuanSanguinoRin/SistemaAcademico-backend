@@ -1,5 +1,7 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.model.EstadoFacturacion;
+import co.edu.ufps.backend.model.EstadoMatricula;
 import co.edu.ufps.backend.model.Facturacion;
 import co.edu.ufps.backend.repository.FacturacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class FacturacionService {
         facturacionRepository.deleteById(numeroFactura);
     }
 
-    public Optional<Facturacion> actualizarEstado(String numeroFactura, String estado) {
+    public Optional<Facturacion> actualizarEstado(String numeroFactura, EstadoFacturacion estado) {
         Optional<Facturacion> facturaOptional = facturacionRepository.findById(numeroFactura);
         if (facturaOptional.isPresent()) {
             Facturacion factura = facturaOptional.get();
@@ -50,7 +52,7 @@ public class FacturacionService {
     public Facturacion generarFactura(String numeroFactura) {
         return facturacionRepository.findById(numeroFactura).map(factura -> {
             factura.setFechaEmision(LocalTime.now());
-            factura.setEstado("Pendiente");
+            factura.setEstado(EstadoFacturacion.Pendiente);
             return facturacionRepository.save(factura);
         }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
     }
@@ -80,7 +82,7 @@ public class FacturacionService {
         return facturacionRepository.findById(numeroFactura).map(factura -> {
             factura.setMetodoPago(metodoPago);
             factura.setFechaPago(LocalTime.now());
-            factura.setEstado("Pagada");
+            factura.setEstado(EstadoFacturacion.Pagada);
             return facturacionRepository.save(factura);
         }).orElseThrow(() -> new RuntimeException("Factura no encontrada"));
     }
@@ -89,6 +91,7 @@ public class FacturacionService {
     public String consultarEstado(String numeroFactura) {
         return facturacionRepository.findById(numeroFactura)
                 .map(Facturacion::getEstado)
+                .map(EstadoFacturacion::toString)
                 .orElse("Factura no encontrada");
     }
 }

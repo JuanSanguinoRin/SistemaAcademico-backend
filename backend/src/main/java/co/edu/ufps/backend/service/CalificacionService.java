@@ -75,7 +75,7 @@ public class CalificacionService {
         EstudianteCurso ec = estudianteCursoService.getById(estudianteCursoId);
 
         // 3. Validar estado "Cursando"
-        if (!"Cursando".equalsIgnoreCase(ec.getEstado())) {
+        if (!"Cursando".equalsIgnoreCase(ec.getEstado().toString())) {
             throw new RuntimeException("El estudiante no está en estado 'Cursando'.");
         }
 
