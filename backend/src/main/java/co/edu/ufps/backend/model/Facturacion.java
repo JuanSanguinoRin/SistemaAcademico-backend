@@ -26,7 +26,7 @@ public class Facturacion {
     private Double descuentos;
     private Double total;
 
-    private String estado; // "Pendiente", "Pagada", "Vencida", "Anulada"
+    private EstadoFacturacion estado; // "Pendiente", "Pagada", "Vencida", "Anulada"
     private String metodoPago;
 
     private LocalTime fechaPago;

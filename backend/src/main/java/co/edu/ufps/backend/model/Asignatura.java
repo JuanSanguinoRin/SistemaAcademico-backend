@@ -22,5 +22,7 @@ public class Asignatura {
     private String tipoAsignatura;
     @ManyToOne
     @JoinColumn(name = "id_Pensum")
+
     private Pensum pensum;
+
 }

@@ -17,6 +17,5 @@ public class PersonalAdministrativo extends Persona {
 
     private String cargo;
     private String departamento;
-    
 
 }

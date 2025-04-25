@@ -10,13 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Rol {
-    // Atributos
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer nivelAcceso;
-    private String modulo;
-    @ManyToOne
-    @JoinColumn(name = "cedula")
-    private Persona persona;
+
+    @Enumerated(EnumType.STRING)
+    private RolEnum nombre;
+
+    private String descripcion;
+
 }

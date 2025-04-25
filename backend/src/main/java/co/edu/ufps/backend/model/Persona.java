@@ -2,6 +2,7 @@ package co.edu.ufps.backend.model;
 
 import java.util.Date;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -22,5 +23,8 @@ public class Persona {
     private String correoElectronico;
     private String correoInstitucional;
     private String direccion;
-    private String sexo;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Sexo sexo;
 }

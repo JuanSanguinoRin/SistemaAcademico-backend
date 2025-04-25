@@ -3,6 +3,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -16,8 +17,9 @@ public class HorarioCurso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "dia")
-    private String dia;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private DiaSemana dia;
 
     @Column(name = "hora_inicio")
     private LocalTime horaInicio;
