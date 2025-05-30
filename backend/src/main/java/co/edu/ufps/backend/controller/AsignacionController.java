@@ -1,8 +1,6 @@
 package co.edu.ufps.backend.controller;
 
-import co.edu.ufps.backend.model.Asignacion;
-import co.edu.ufps.backend.model.Asistencia;
-import co.edu.ufps.backend.model.Calificacion;
+import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.service.AsignacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
