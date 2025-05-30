@@ -1,9 +1,7 @@
 package co.edu.ufps.backend.service;
 
 import co.edu.ufps.backend.model.*;
-import co.edu.ufps.backend.repository.AsignacionRepository;
-import co.edu.ufps.backend.repository.CursoRepository;
-import co.edu.ufps.backend.repository.DocenteRepository;
+import co.edu.ufps.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +21,17 @@ public class AsignacionService {
     private final DocenteService docenteService;
     private final CursoService cursoService;
     private final HorarioCursoService horarioCursoService;
+    private final EstudianteCursoRepository estudianteCursoRepository;
+    private final AsistenciaRepository asistenciaRepository;
 
     public List<Curso> getCursosByDocente(Long docenteId) {
-        return asignacionRepository.findByDocenteId(docenteId);
+        List<Asignacion> asignaciones = asignacionRepository.findByDocenteId(docenteId);
+        return asignaciones.stream()
+                .map(Asignacion::getCurso)
+                .toList();
     }
+
+
 
     /**
      * Obtener todas las asignaciones
@@ -143,5 +148,72 @@ public class AsignacionService {
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
     }
+
+    public Calificacion registrarCalificacionDesdeAsignacion(Long docenteId, Long cursoId, Long estudianteCursoId, Calificacion calificacionInput) {
+        // Validar que el docente está asignado al curso
+        Optional<Asignacion> asignacion = asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId);
+        if (asignacion.isEmpty()) {
+            throw new RuntimeException("El docente no está asignado a este curso.");
+        }
+
+        // Verificar que el estudianteCurso pertenece al curso dado
+        EstudianteCurso estudianteCurso = estudianteCursoRepository.findById(estudianteCursoId)
+                .orElseThrow(() -> new RuntimeException("EstudianteCurso no encontrado"));
+        if (!estudianteCurso.getCurso().getId().equals(cursoId)) {
+            throw new RuntimeException("Este estudiante no está en el curso especificado.");
+        }
+
+        // Verificar si ya existe una calificación de ese tipo
+        boolean yaExiste = calificacionService.tipoYaExisteParaEstudianteCurso(estudianteCursoId, calificacionInput.getTipo());
+        if (yaExiste) {
+            throw new RuntimeException("Ya existe una calificación de tipo " + calificacionInput.getTipo());
+        }
+
+        // Asociar y guardar la calificación
+        calificacionInput.setEstudianteCurso(estudianteCurso);
+        return calificacionService.createCalificacion(calificacionInput);
+    }
+
+
+    public List<EstudianteCurso> getEstudiantesPorCursoYDocente(Long docenteId, Long cursoId) {
+        // Verificar que el curso está asignado a ese docente
+        Optional<Asignacion> asignacion = asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId);
+        if (asignacion.isEmpty()) {
+            throw new RuntimeException("El curso no está asignado a este docente");
+        }
+
+        // Si la asignación existe, obtener los estudiantes inscritos en el curso
+        return estudianteCursoRepository.findByCursoId(cursoId);
+    }
+
+
+
+    public Asistencia registrarAsistenciaDeProfesor(Long docenteId, Long cursoId, Long estudianteCursoId, Asistencia asistenciaInput) {
+        // Verifica que el curso esté asignado al docente
+        Optional<Asignacion> asignacion = asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId);
+        if (asignacion.isEmpty()) {
+            throw new RuntimeException("Este curso no está asignado al docente.");
+        }
+
+        // Verifica que el estudiante esté inscrito en ese curso
+        EstudianteCurso estudianteCurso = estudianteCursoRepository.findById(estudianteCursoId)
+                .orElseThrow(() -> new RuntimeException("EstudianteCurso no encontrado"));
+
+        if (!estudianteCurso.getCurso().getId().equals(cursoId)) {
+            throw new RuntimeException("El estudiante no pertenece a este curso.");
+        }
+
+        // Crear la asistencia
+        Asistencia asistencia = new Asistencia();
+        asistencia.setEstudianteCurso(estudianteCurso);
+        asistencia.setFecha(asistenciaInput.getFecha() != null ? asistenciaInput.getFecha() : new Date());
+        asistencia.setEstado(asistenciaInput.getEstado());
+        asistencia.setExcusa(asistenciaInput.getExcusa());
+
+        return asistenciaRepository.save(asistencia);
+    }
+
+
+
 
 }

@@ -1,7 +1,6 @@
 package co.edu.ufps.backend.controller;
 
-import co.edu.ufps.backend.model.Asignacion;
-import co.edu.ufps.backend.model.Asistencia;
+import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.service.AsignacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,19 @@ public class AsignacionController {
     public ResponseEntity<List<Asignacion>> getAllAsignaciones() {
         return ResponseEntity.ok(asignacionService.getAllAsignaciones());
     }
+
+
+    @GetMapping("/docente/{docenteId}/cursos")
+    public ResponseEntity<List<Curso>> getCursosAsignadosAlDocente(@PathVariable Long docenteId) {
+        try {
+            List<Curso> cursos = asignacionService.getCursosByDocente(docenteId);
+            return ResponseEntity.ok(cursos);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+
 
     /**
      * Obtener una asignación por ID
@@ -82,4 +94,47 @@ public class AsignacionController {
     ) {
         return ResponseEntity.ok(asignacionService.registrarAsistencia(estudianteCursoId, asistencia));
     }
+
+    @PostMapping("/docente/{docenteId}/curso/{cursoId}/estudiante/{estudianteCursoId}/calificacion")
+    public ResponseEntity<Calificacion> registrarCalificacionDocente(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Calificacion calificacion) {
+        try {
+            Calificacion creada = asignacionService.registrarCalificacionDesdeAsignacion(docenteId, cursoId, estudianteCursoId, calificacion);
+            return ResponseEntity.ok(creada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    // Obtener los estudiantes de un curso, validando que el docente esté asignado
+    @GetMapping("/docente/{docenteId}/curso/{cursoId}/estudiantes")
+    public ResponseEntity<List<EstudianteCurso>> getEstudiantesDelCursoDeDocente(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId) {
+        try {
+            List<EstudianteCurso> estudiantes = asignacionService.getEstudiantesPorCursoYDocente(docenteId, cursoId);
+            return ResponseEntity.ok(estudiantes);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    // Registrar asistencia desde asignación
+    @PostMapping("/docente/{docenteId}/curso/{cursoId}/estudiante/{estudianteCursoId}/asistencia")
+    public ResponseEntity<Asistencia> marcarAsistenciaDesdeAsignacion(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Asistencia asistencia) {
+        try {
+            Asistencia creada = asignacionService.registrarAsistenciaDeProfesor(docenteId, cursoId, estudianteCursoId, asistencia);
+            return ResponseEntity.ok(creada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 }

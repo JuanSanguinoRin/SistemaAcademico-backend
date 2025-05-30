@@ -8,6 +8,20 @@ import java.util.Optional;
 
 public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     Optional<Asignacion> findByCursoId(Long cursoId);
-    List<Curso> findByDocenteId(Long docenteId);
+
+
+
+    // AsignacionRepository.java
+    List<Asignacion> findByDocenteId(Long docenteId);
+
     Optional<Asignacion> findByDocenteIdAndCursoId(Long docenteId, Long cursoId);
+
+
+
+
+
+
+
+
+
 }
