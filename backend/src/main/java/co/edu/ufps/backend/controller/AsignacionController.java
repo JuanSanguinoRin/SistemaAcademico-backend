@@ -2,6 +2,7 @@ package co.edu.ufps.backend.controller;
 
 import co.edu.ufps.backend.model.Asignacion;
 import co.edu.ufps.backend.model.Asistencia;
+import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.service.AsignacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -82,4 +83,19 @@ public class AsignacionController {
     ) {
         return ResponseEntity.ok(asignacionService.registrarAsistencia(estudianteCursoId, asistencia));
     }
+
+    @PostMapping("/docente/{docenteId}/curso/{cursoId}/estudiante/{estudianteCursoId}/calificacion")
+    public ResponseEntity<Calificacion> registrarCalificacionDocente(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Calificacion calificacion) {
+        try {
+            Calificacion creada = asignacionService.registrarCalificacionDesdeAsignacion(docenteId, cursoId, estudianteCursoId, calificacion);
+            return ResponseEntity.ok(creada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 }

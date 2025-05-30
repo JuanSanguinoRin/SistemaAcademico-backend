@@ -4,6 +4,7 @@ import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.repository.AsignacionRepository;
 import co.edu.ufps.backend.repository.CursoRepository;
 import co.edu.ufps.backend.repository.DocenteRepository;
+import co.edu.ufps.backend.repository.EstudianteCursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class AsignacionService {
     private final DocenteService docenteService;
     private final CursoService cursoService;
     private final HorarioCursoService horarioCursoService;
+    private final EstudianteCursoRepository estudianteCursoRepository;
 
     public List<Curso> getCursosByDocente(Long docenteId) {
         return asignacionRepository.findByDocenteId(docenteId);
@@ -143,5 +145,35 @@ public class AsignacionService {
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
     }
+    public Calificacion registrarCalificacionDesdeAsignacion(Long docenteId, Long cursoId, Long estudianteCursoId, Calificacion calificacionInput) {
+        // Validar que el docente está asignado al curso
+        Optional<Asignacion> asignacion = asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId);
+        if (asignacion.isEmpty()) {
+            throw new RuntimeException("El docente no está asignado a este curso.");
+        }
+
+        // Verificar que el estudianteCurso pertenece al curso dado
+        EstudianteCurso estudianteCurso = estudianteCursoRepository.findById(estudianteCursoId)
+                .orElseThrow(() -> new RuntimeException("EstudianteCurso no encontrado"));
+        if (!estudianteCurso.getCurso().getId().equals(cursoId)) {
+            throw new RuntimeException("Este estudiante no está en el curso especificado.");
+        }
+
+        // Validar estado "Cursando"
+        if (!"Cursando".equalsIgnoreCase(estudianteCurso.getEstado())) {
+            throw new RuntimeException("El estudiante no está en estado 'Cursando'.");
+        }
+
+        // Verificar si ya existe una calificación de ese tipo
+        boolean yaExiste = calificacionService.tipoYaExisteParaEstudianteCurso(estudianteCursoId, calificacionInput.getTipo());
+        if (yaExiste) {
+            throw new RuntimeException("Ya existe una calificación de tipo " + calificacionInput.getTipo());
+        }
+
+        // Asociar y guardar la calificación
+        calificacionInput.setEstudianteCurso(estudianteCurso);
+        return calificacionService.createCalificacion(calificacionInput);
+    }
+
 
 }
