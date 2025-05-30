@@ -23,6 +23,19 @@ public class AsignacionController {
         return ResponseEntity.ok(asignacionService.getAllAsignaciones());
     }
 
+
+    @GetMapping("/docente/{docenteId}/cursos")
+    public ResponseEntity<List<Curso>> getCursosAsignadosAlDocente(@PathVariable Long docenteId) {
+        try {
+            List<Curso> cursos = asignacionService.getCursosByDocente(docenteId);
+            return ResponseEntity.ok(cursos);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+
+
     /**
      * Obtener una asignación por ID
      */
