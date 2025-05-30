@@ -96,4 +96,32 @@ public class AsignacionController {
         }
     }
 
+    // Obtener los estudiantes de un curso, validando que el docente esté asignado
+    @GetMapping("/docente/{docenteId}/curso/{cursoId}/estudiantes")
+    public ResponseEntity<List<EstudianteCurso>> getEstudiantesDelCursoDeDocente(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId) {
+        try {
+            List<EstudianteCurso> estudiantes = asignacionService.getEstudiantesPorCursoYDocente(docenteId, cursoId);
+            return ResponseEntity.ok(estudiantes);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    // Registrar asistencia desde asignación
+    @PostMapping("/docente/{docenteId}/curso/{cursoId}/estudiante/{estudianteCursoId}/asistencia")
+    public ResponseEntity<Asistencia> marcarAsistenciaDesdeAsignacion(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Asistencia asistencia) {
+        try {
+            Asistencia creada = asignacionService.registrarAsistenciaDeProfesor(docenteId, cursoId, estudianteCursoId, asistencia);
+            return ResponseEntity.ok(creada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 }

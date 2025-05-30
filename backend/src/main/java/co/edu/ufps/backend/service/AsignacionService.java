@@ -146,6 +146,7 @@ public class AsignacionService {
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
     }
+
     public Calificacion registrarCalificacionDesdeAsignacion(Long docenteId, Long cursoId, Long estudianteCursoId, Calificacion calificacionInput) {
         // Validar que el docente está asignado al curso
         Optional<Asignacion> asignacion = asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId);
@@ -158,11 +159,6 @@ public class AsignacionService {
                 .orElseThrow(() -> new RuntimeException("EstudianteCurso no encontrado"));
         if (!estudianteCurso.getCurso().getId().equals(cursoId)) {
             throw new RuntimeException("Este estudiante no está en el curso especificado.");
-        }
-
-        // Validar estado "Cursando"
-        if (!"Cursando".equalsIgnoreCase(estudianteCurso.getEstado())) {
-            throw new RuntimeException("El estudiante no está en estado 'Cursando'.");
         }
 
         // Verificar si ya existe una calificación de ese tipo
@@ -214,5 +210,8 @@ public class AsignacionService {
 
         return asistenciaRepository.save(asistencia);
     }
+
+
+
 
 }

@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/estudiantes/**").hasAnyRole("Admin", "Estudiante")
                         .requestMatchers("/estudiante-cursos/**").hasAuthority("Admin")
                         .requestMatchers("/api/password/**").permitAll() // Endpoints de recuperación de contraseña
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

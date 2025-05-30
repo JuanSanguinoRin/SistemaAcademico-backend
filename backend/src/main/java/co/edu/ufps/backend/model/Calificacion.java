@@ -32,4 +32,6 @@ public class Calificacion {
     @JoinColumn(name = "estudiante")
     private EstudianteCurso estudianteCurso;
 
+    private String retroalimentacion;
+
 }
