@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40d4575e-a532-4802-b321-8a23e5d4aa2d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/dto/EstudianteCursoDetalladoDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/model/Calificacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/model/Calificacion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/service/CalificacionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/service/CalificacionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/service/EstudianteCursoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/co/edu/ufps/backend/service/EstudianteCursoService.java" afterDir="false" />
-    </list>
+    <list default="true" id="40d4575e-a532-4802-b321-8a23e5d4aa2d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -106,7 +99,7 @@
       <workItem from="1748518888758" duration="3212000" />
       <workItem from="1748522526994" duration="1465000" />
       <workItem from="1748535041252" duration="11497000" />
-      <workItem from="1748552336135" duration="23608000" />
+      <workItem from="1748552336135" duration="23901000" />
     </task>
     <servers />
   </component>
