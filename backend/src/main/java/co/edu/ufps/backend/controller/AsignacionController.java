@@ -103,4 +103,21 @@ public class AsignacionController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+
+
+
+    @PostMapping("/docente/{docenteId}/curso/{cursoId}/estudiante/{estudianteCursoId}/asistencia")
+    public ResponseEntity<Asistencia> marcarAsistenciaDesdeAsignacion(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Asistencia asistencia) {
+        try {
+            Asistencia creada = asignacionService.registrarAsistenciaDeProfesor(docenteId, cursoId, estudianteCursoId, asistencia);
+            return ResponseEntity.ok(creada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }
