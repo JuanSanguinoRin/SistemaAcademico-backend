@@ -1,5 +1,6 @@
 package co.edu.ufps.backend.service;
 
+import co.edu.ufps.backend.dto.EstudianteCursoDetalladoDTO;
 import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.repository.AsistenciaRepository;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
@@ -20,12 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EstudianteCursoService {
     private final EstudianteCursoRepository estudianteCursoRepository;
-    private final AsistenciaService asistenciaService;
     private final EstudianteService estudianteService;
     private final CursoService cursoService;
     private final AsignaturaPrerrequisitoService asignaturaPrerrequisitoService;
-    private final AsignaturaService asignaturaService;
     private final HorarioCursoService horarioCursoService;
+    private final CalificacionRepository calificacionRepository;
 
     public List<EstudianteCurso> getAllEstudianteCursos() {
         return estudianteCursoRepository.findAll();
@@ -296,5 +296,16 @@ public class EstudianteCursoService {
         }
         return horarioCompleto;
     }
+
+    /*public List<EstudianteCursoDetalladoDTO> getDetallesCursosActuales(Long estudianteId) {
+        List<EstudianteCurso> cursosActuales = this.getCursosActualesByEstudiante(estudianteId);
+
+        return cursosActuales.stream().map(ec -> {
+            // Usar CalificacionRepository directamente
+            List<Calificacion> calificaciones = calificacionRepository.findByEstudianteCursoId(ec.getId()); //
+            Float definitiva = historialAcademicoService.calcularDefinitivaPorEstudianteCurso(ec.getId());
+            return new EstudianteCursoDetalladoDTO(ec, calificaciones, definitiva);
+        }).collect(Collectors.toList());
+    }*/
 
 }
