@@ -4,6 +4,7 @@ import co.edu.ufps.backend.model.*;
 import co.edu.ufps.backend.repository.AsignacionRepository;
 import co.edu.ufps.backend.repository.CursoRepository;
 import co.edu.ufps.backend.repository.DocenteRepository;
+import co.edu.ufps.backend.repository.EstudianteCursoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,14 @@ public class AsignacionService {
     private final DocenteService docenteService;
     private final CursoService cursoService;
     private final HorarioCursoService horarioCursoService;
+    private final EstudianteCursoRepository estudianteCursoRepository;
 
+    // AsignacionService.java
     public List<Curso> getCursosByDocente(Long docenteId) {
-        return asignacionRepository.findByDocenteId(docenteId);
+        List<Asignacion> asignaciones = asignacionRepository.findByDocenteId(docenteId);
+        return asignaciones.stream()
+                .map(Asignacion::getCurso)
+                .toList();
     }
 
     /**
@@ -142,6 +148,17 @@ public class AsignacionService {
 
     public Asistencia registrarAsistencia(Long estudianteCursoId, Asistencia asistenciaInput) {
         return asistenciaService.registrarAsistencia(estudianteCursoId, asistenciaInput);
+    }
+
+    public List<EstudianteCurso> getEstudiantesPorCursoYDocente(Long docenteId, Long cursoId) {
+        // Verificar que el curso está asignado a ese docente
+        Optional<Asignacion> asignacion = asignacionRepository.findByDocenteIdAndCursoId(docenteId, cursoId);
+        if (asignacion.isEmpty()) {
+            throw new RuntimeException("El curso no está asignado a este docente");
+        }
+
+        // Si la asignación existe, obtener los estudiantes inscritos en el curso
+        return estudianteCursoRepository.findByCursoId(cursoId);
     }
 
 }
