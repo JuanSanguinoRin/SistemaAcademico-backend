@@ -2,6 +2,8 @@ package co.edu.ufps.backend.controller;
 
 import co.edu.ufps.backend.model.Asignacion;
 import co.edu.ufps.backend.model.Asistencia;
+import co.edu.ufps.backend.model.Curso;
+import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.service.AsignacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -81,5 +83,41 @@ public class AsignacionController {
             @RequestBody Asistencia asistencia
     ) {
         return ResponseEntity.ok(asignacionService.registrarAsistencia(estudianteCursoId, asistencia));
+    }
+
+    @GetMapping("/docente/{docenteId}/cursos")
+    public ResponseEntity<List<Curso>> getCursosAsignadosAlDocente(@PathVariable Long docenteId) {
+        List<Curso> cursos = asignacionService.getCursosByDocente(docenteId);
+        return ResponseEntity.ok(cursos);
+    }
+
+
+    @GetMapping("/docente/{docenteId}/curso/{cursoId}/estudiantes")
+    public ResponseEntity<List<EstudianteCurso>> getEstudiantesDelCursoDeDocente(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId) {
+        try {
+            List<EstudianteCurso> estudiantes = asignacionService.getEstudiantesPorCursoYDocente(docenteId, cursoId);
+            return ResponseEntity.ok(estudiantes);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+
+
+
+    @PostMapping("/docente/{docenteId}/curso/{cursoId}/estudiante/{estudianteCursoId}/asistencia")
+    public ResponseEntity<Asistencia> marcarAsistenciaDesdeAsignacion(
+            @PathVariable Long docenteId,
+            @PathVariable Long cursoId,
+            @PathVariable Long estudianteCursoId,
+            @RequestBody Asistencia asistencia) {
+        try {
+            Asistencia creada = asignacionService.registrarAsistenciaDeProfesor(docenteId, cursoId, estudianteCursoId, asistencia);
+            return ResponseEntity.ok(creada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }
