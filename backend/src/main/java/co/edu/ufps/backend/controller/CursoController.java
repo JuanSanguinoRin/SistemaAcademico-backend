@@ -76,7 +76,18 @@ public class CursoController {
         }
     }
 
+    @GetMapping("/matriculables/estudiante/{estudianteId}")
+    public ResponseEntity<List<Curso>> getCursosMatriculablesParaEstudiante(@PathVariable Long estudianteId) {
+        try {
+            List<Curso> cursos = cursoService.getCursosMatriculables(estudianteId);
+            if (cursos.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(cursos);
+        } catch (RuntimeException e) {
 
-
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
 }

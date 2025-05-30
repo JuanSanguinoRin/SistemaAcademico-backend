@@ -83,9 +83,9 @@ public class HistorialAcademicoController {
         return ResponseEntity.ok(definitiva);
     }
 
-    @GetMapping("/ponderado/{estudianteCursoId}")
-    public ResponseEntity<Double> calcularPonderado(@PathVariable Long estudianteCursoId) {
-        Double ponderado = historialAcademicoService.calcularPromedioPonderado(estudianteCursoId);
+    @GetMapping("/ponderado/{estudianteId}")
+    public ResponseEntity<Double> calcularPonderado(@PathVariable Long estudianteId) {
+        Double ponderado = historialAcademicoService.calcularPromedioPonderado(estudianteId);
         return ResponseEntity.ok(ponderado);
     }
 

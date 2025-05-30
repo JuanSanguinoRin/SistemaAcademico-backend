@@ -84,6 +84,9 @@ public class HistorialAcademicoService {
     public Double calcularPromedioPonderado(Long estudianteId) {
         // Obtener cursos aprobados
         List<EstudianteCurso> cursosAprobados = estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
+        List<EstudianteCurso> cursosReprobados = estudianteCursoService.getCursosReprobadosByEstudiante(estudianteId);
+
+        cursosAprobados.addAll(cursosReprobados);
 
         if (cursosAprobados.isEmpty()) {
             return 0.0;

@@ -34,8 +34,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("Admin")
                         .requestMatchers("/api/docentes/**").hasAnyRole("Admin", "Docente")
                         .requestMatchers("/api/estudiantes/**").hasAnyRole("Admin", "Estudiante")
-                        .requestMatchers("/estudiante-cursos/**").hasAuthority("Admin")
                         .requestMatchers("/api/password/**").permitAll() // Endpoints de recuperación de contraseña
+                        .requestMatchers("/horarios", "/horarios/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

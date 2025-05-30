@@ -14,4 +14,5 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
     List<Curso> findBySemestreId(Long semestreId);
 
     List<Curso> findByVacacional(Boolean vacacional);
+
 }

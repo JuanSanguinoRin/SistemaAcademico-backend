@@ -66,4 +66,14 @@ public class AsignaturaController {
         asignaturaService.eliminarPrerrequisito(codigo, codigoPrerrequisito);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/pensum/{pensumId}")
+    public ResponseEntity<List<Asignatura>> getAsignaturasByPensumId(@PathVariable Long pensumId) {
+        List<Asignatura> asignaturas = asignaturaService.getAsignaturasByPensumId(pensumId);
+        if (asignaturas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(asignaturas);
+    }
+
 }
