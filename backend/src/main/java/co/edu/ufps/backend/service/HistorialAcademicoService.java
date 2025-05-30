@@ -3,6 +3,7 @@ package co.edu.ufps.backend.service;
 import co.edu.ufps.backend.model.Calificacion;
 import co.edu.ufps.backend.model.EstudianteCurso;
 import co.edu.ufps.backend.model.HistorialAcademico;
+import co.edu.ufps.backend.model.TipoEvaluacion;
 import co.edu.ufps.backend.repository.EstudianteCursoRepository;
 import co.edu.ufps.backend.repository.HistorialAcademicoRepository;
 import lombok.RequiredArgsConstructor;
@@ -126,7 +127,7 @@ public class HistorialAcademicoService {
 
         // Revisar si existe una nota de tipo HA (Habilitación)
         Optional<Calificacion> ha = calificaciones.stream()
-                .filter(c -> "HA".equalsIgnoreCase(c.getTipo()))
+                .filter(c -> TipoEvaluacion.HA == c.getTipo())
                 .findFirst();
 
         if (ha.isPresent()) {
@@ -134,21 +135,24 @@ public class HistorialAcademicoService {
         }
 
         // Buscar calificaciones necesarias para el cálculo tradicional
-        Map<String, Float> notas = new HashMap<>();
+        Map<TipoEvaluacion, Float> notas = new HashMap<>();
         for (Calificacion c : calificaciones) {
-            notas.put(c.getTipo().toUpperCase(), c.getNota());
+            notas.put(c.getTipo(), c.getNota());
         }
 
         // Validar que existan P1, P2, P3 y EX para el cálculo
-        if (!notas.containsKey("P1") || !notas.containsKey("P2") || !notas.containsKey("P3") || !notas.containsKey("EX")) {
+        if (!notas.containsKey(TipoEvaluacion.P1) ||
+                !notas.containsKey(TipoEvaluacion.P2) ||
+                !notas.containsKey(TipoEvaluacion.P3) ||
+                !notas.containsKey(TipoEvaluacion.EX)) {
             throw new RuntimeException("Faltan calificaciones requeridas (P1, P2, P3 o EX).");
         }
 
         // Cálculo ponderado
-        float definitiva = (notas.get("P1") * 0.2333f) +
-                (notas.get("P2") * 0.2333f) +
-                (notas.get("P3") * 0.2333f) +
-                (notas.get("EX") * 0.3001f);
+        float definitiva = (notas.get(TipoEvaluacion.P1) * 0.2333f) +
+                (notas.get(TipoEvaluacion.P2) * 0.2333f) +
+                (notas.get(TipoEvaluacion.P3) * 0.2333f) +
+                (notas.get(TipoEvaluacion.EX) * 0.3001f);
 
         return Math.round(definitiva * 100.0f) / 100.0f; // Redondear a 2 decimales
     }
