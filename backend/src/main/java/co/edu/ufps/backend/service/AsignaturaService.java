@@ -78,4 +78,9 @@ public class AsignaturaService {
 
         asignaturaPrerrequisitoRepository.delete(relacion);
     }
+
+    public List<Asignatura> getAsignaturasByPensumId(Long pensumId) {
+        return asignaturaRepository.findByPensum_Id(pensumId);
+    }
+
 }

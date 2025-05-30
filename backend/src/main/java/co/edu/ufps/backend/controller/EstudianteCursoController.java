@@ -2,6 +2,7 @@ package co.edu.ufps.backend.controller;
 
 import co.edu.ufps.backend.model.Asistencia;
 import co.edu.ufps.backend.model.EstudianteCurso;
+import co.edu.ufps.backend.model.HorarioCurso;
 import co.edu.ufps.backend.service.EstudianteCursoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -105,6 +106,25 @@ public class EstudianteCursoController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/estudiante-aprobados/{estudianteId}")
+    public List<EstudianteCurso> getEstudianteCursosByEstaudianteWithCursoAprobado(@PathVariable Long estudianteId) {
+        return estudianteCursoService.getCursosAprobadosByEstudiante(estudianteId);
+    }
+
+    @GetMapping("/estudiante-cursados/{estudianteId}")
+    public List<EstudianteCurso> getEstudianteCursosByEstaudianteWithCursoCursando(@PathVariable Long estudianteId) {
+        return estudianteCursoService.getCursosActualesByEstudiante(estudianteId);
+    }
+
+    @GetMapping("/estudiante/{estudianteId}/horario-actual")
+    public ResponseEntity<List<HorarioCurso>> getHorarioActualDelEstudiante(@PathVariable Long estudianteId) {
+        List<HorarioCurso> horario = estudianteCursoService.getHorarioCompletoEstudianteActual(estudianteId);
+        if (horario == null || horario.isEmpty()) {
+            return ResponseEntity.noContent().build(); // No hay horario o no hay cursos
+        }
+        return ResponseEntity.ok(horario);
     }
 
 }

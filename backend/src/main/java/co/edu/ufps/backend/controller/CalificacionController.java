@@ -67,7 +67,4 @@ public class CalificacionController {
         return calificacionService.getCalificacionesByEstudianteCurso(id);
     }
 
-
-
-
 }

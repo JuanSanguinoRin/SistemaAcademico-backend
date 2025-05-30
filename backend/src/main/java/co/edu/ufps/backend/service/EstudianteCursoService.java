@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class EstudianteCursoService {
 
 
     public List<EstudianteCurso> getEstudianteCursosByEstudiante(Long estudianteId) {
-        return estudianteCursoRepository.findByEstudianteCodigoEstudiante(estudianteId);
+        return estudianteCursoRepository.findByEstudianteId(estudianteId);
     }
 
     public List<EstudianteCurso> getEstudianteCursosByCurso(Long cursoId) {
@@ -89,7 +90,7 @@ public class EstudianteCursoService {
         // Lógica para cancelar curso
         EstudianteCurso estudianteCurso = estudianteCursoRepository.findById(estudianteCursoId)
                 .orElseThrow(() -> new RuntimeException("EstudianteCurso not found"));
-        estudianteCurso.setEstado("cancelado");
+        estudianteCurso.setEstado("Cancelado");
         estudianteCursoRepository.save(estudianteCurso);
     }
 
@@ -261,6 +262,39 @@ public class EstudianteCursoService {
 
         return cursosActuales;
 
+    }
+
+    public List<EstudianteCurso> getCursosReprobadosByEstudiante(Long estudianteId)
+    {
+
+        List<EstudianteCurso> cursosAprobados = estudianteCursoRepository.findByEstudianteIdAndEstado(estudianteId, "Reprobado");
+
+        return cursosAprobados;
+
+    }
+
+    public List<HorarioCurso> getHorarioCompletoEstudianteActual(Long estudianteId) {
+        List<EstudianteCurso> cursosActuales = this.getCursosActualesByEstudiante(estudianteId);
+        List<HorarioCurso> horarioCompleto = new ArrayList<>();
+
+        if (cursosActuales != null) {
+            for (EstudianteCurso ec : cursosActuales) {
+                if (ec.getCurso() != null && ec.getCurso().getId() != null) {
+                    List<HorarioCurso> horariosDelCurso = horarioCursoService.getAllHorariosByCurso(ec.getCurso().getId()); //
+                    if (horariosDelCurso != null) {
+                        horarioCompleto.addAll(horariosDelCurso);
+                    }
+                }
+            }
+        }
+
+        // Ordenar el horario para una mejor visualización
+        // (Requiere que HorarioCurso tenga getters para dia y horaInicio)
+        if (!horarioCompleto.isEmpty()) {
+            horarioCompleto.sort(Comparator.comparing((HorarioCurso hc) -> hc.getDia().ordinal()) // Asumiendo que DiaSemana es un Enum
+                    .thenComparing(HorarioCurso::getHoraInicio));
+        }
+        return horarioCompleto;
     }
 
 }
